@@ -1,0 +1,148 @@
+---
+import Base from '../layouts/Base.astro';
+import Kepala from '../components/Kepala.astro';
+import TombolUnduh from '../components/TombolUnduh.astro';
+import QrUnduh from '../components/QrUnduh.astro';
+import Ikon from '../components/Ikon.astro';
+import { apkTersedia, situs, tanggalIndonesia } from '../config/situs';
+---
+
+<Base judul="Unduh HyTrack" deskripsi="Unduh aplikasi Android HyTrack atau buka HyTrack Web dari browser.">
+  <Kepala
+    judul={apkTersedia ? 'Unduh HyTrack untuk Android' : 'APK Android segera tersedia'}
+    eyebrow="Unduh"
+    jejak={[{ label: 'Unduh' }]}
+    lead={apkTersedia
+      ? 'Pasang file APK resmi, atau pakai HyTrack Web tanpa memasang apa pun.'
+      : 'File APK resmi belum dirilis. Sementara itu, semua fitur pasien sudah bisa dipakai lewat HyTrack Web.'}
+  />
+
+  <section class="section-tight">
+    <div class="wrap u-grid">
+      <div class="card u-main">
+        {
+          apkTersedia ? (
+            <>
+              <h2 class="h-card">
+                <Ikon nama="android" ukuran={28} /> HyTrack untuk Android
+              </h2>
+              <dl class="rilis-info">
+                <div>
+                  <dt>Versi</dt>
+                  <dd>{situs.apk.versi || '—'}</dd>
+                </div>
+                <div>
+                  <dt>Ukuran</dt>
+                  <dd>{situs.apk.ukuran || '—'}</dd>
+                </div>
+                <div>
+                  <dt>Tanggal rilis</dt>
+                  <dd>{tanggalIndonesia(situs.apk.tanggal) || '—'}</dd>
+                </div>
+                {situs.apk.androidMinimal && (
+                  <div>
+                    <dt>Minimal</dt>
+                    <dd>{situs.apk.androidMinimal}</dd>
+                  </div>
+                )}
+              </dl>
+              <TombolUnduh info />
+              <p class="perangkat-ios-only cta-note">
+                APK hanya dapat dipasang di Android. Di iPhone, gunakan HyTrack Web lewat Safari.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 class="h-card">
+                <Ikon nama="android" ukuran={28} /> Belum ada file APK resmi
+              </h2>
+              <p>
+                Kami belum menerbitkan file APK resmi. Jangan memasang APK HyTrack dari sumber lain. Halaman ini akan menampilkan
+                tombol unduh, versi, dan ukuran begitu rilis resmi siap.
+              </p>
+              <a class="btn btn-primary" href={situs.aplikasi.web} data-cta="web">
+                <Ikon nama="web" /> Buka HyTrack Web
+              </a>
+            </>
+          )
+        }
+        <p class="u-links">
+          <a class="link-arrow" href="/panduan/memasang-android">Lihat cara memasang</a>
+        </p>
+      </div>
+
+      <aside class="u-side">
+        <div class="card qr-desk">
+          <h2 class="h-card">Buka di HP</h2>
+          <p>Pindai QR ini dari laptop untuk membuka halaman ini di HP-mu.</p>
+          <QrUnduh ukuran={180} />
+        </div>
+        <div class="card">
+          <h2 class="h-card"><Ikon nama="web" ukuran={24} /> HyTrack Web</h2>
+          <p>Bisa dipakai di semua HP dan laptop, termasuk iPhone. Tidak perlu memasang apa pun.</p>
+          <a class="link-arrow" href={situs.aplikasi.web}>Buka {situs.aplikasi.web.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .u-grid {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .u-grid {
+      grid-template-columns: 1.3fr 0.7fr;
+    }
+  }
+  .u-main {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .h-card {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.4rem;
+  }
+  .h-card :global(svg) {
+    color: var(--teal-700);
+  }
+  .rilis-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1rem;
+    margin: 1.25rem 0 1.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--mint-50);
+    border-radius: 14px;
+  }
+  .rilis-info dt {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .rilis-info dd {
+    margin: 0;
+    font-weight: 750;
+    color: var(--teal-900);
+  }
+  .u-links {
+    margin: 1.5rem 0 0;
+  }
+  .u-side {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (max-width: 899px) {
+    .qr-desk {
+      display: none;
+    }
+  }
+  :global(html[data-perangkat='android']) .qr-desk,
+  :global(html[data-perangkat='ios']) .qr-desk {
+    display: none;
+  }
+</style>

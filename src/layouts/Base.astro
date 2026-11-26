@@ -1,0 +1,205 @@
+---
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import { Image } from 'astro:assets';
+import logo from '../assets/logo-hytrack.png';
+import Ikon from '../components/Ikon.astro';
+import TombolUnduh from '../components/TombolUnduh.astro';
+import { situs } from '../config/situs';
+import { footer, menuUtama } from '../data/navigasi';
+
+interface Props {
+  judul: string;
+  deskripsi?: string;
+}
+const { judul, deskripsi = 'HyTrack, Teman Perjalanan Berobat: ambil nomor antrean, tahu kapan berangkat, dan ikuti kunjunganmu dari HP.' } =
+  Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const judulPenuh = path === '/' ? `${situs.nama} — ${situs.slogan}` : `${judul} · ${situs.nama}`;
+const kanonik = new URL(path, Astro.site).href;
+const aktif = (href: string) => path === href || path.startsWith(href + '/');
+const sosial = Object.entries(situs.sosial).filter(([, url]) => url);
+const tahun = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{judulPenuh}</title>
+    <meta name="description" content={deskripsi} />
+    <link rel="canonical" href={kanonik} />
+    <link rel="icon" type="image/png" href="/assets/favicon.png" />
+    <meta name="theme-color" content="#0b3b37" />
+    <meta property="og:title" content={judulPenuh} />
+    <meta property="og:description" content={deskripsi} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:url" content={kanonik} />
+    <meta property="og:image" content={new URL('/assets/og-hytrack.png', Astro.site).href} />
+    <script is:inline>
+      // Deteksi perangkat untuk mengurutkan tombol unduh. ?perangkat=android|ios|desktop untuk uji.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        var q = new URLSearchParams(location.search).get('perangkat');
+        var ua = navigator.userAgent || '';
+        var ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        var p = q && /^(android|ios|desktop)$/.test(q) ? q : /Android/i.test(ua) ? 'android' : ios ? 'ios' : 'desktop';
+        d.setAttribute('data-perangkat', p);
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#isi">Lompat ke isi</a>
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="brand" href="/" aria-label="HyTrack, ke beranda">
+          <Image src={logo} alt="" width={92} loading="eager" />
+          <span>
+            <span class="brand-name">HyTrack</span>
+            <span class="brand-tag">{situs.slogan}</span>
+          </span>
+        </a>
+        <nav class="nav" id="menu-utama" aria-label="Menu utama">
+          {
+            menuUtama.map((m) => (
+              <a href={m.href} aria-current={aktif(m.href) ? 'page' : undefined}>
+                {m.label}
+              </a>
+            ))
+          }
+          <a class="btn btn-primary nav-web" href={situs.aplikasi.web}>Buka HyTrack Web</a>
+        </nav>
+        <a class="btn btn-secondary btn-sm header-cta" href={situs.aplikasi.web}>Buka HyTrack Web</a>
+        <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-utama">
+          <Ikon nama="menu" ukuran={20} />
+          <span>Menu</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="isi">
+      <slot />
+    </main>
+
+    <footer class="site-footer on-dark">
+      <div class="wrap">
+        <div class="footer-brand">
+          <a class="brand" href="/" aria-label="HyTrack, ke beranda">
+            <Image src={logo} alt="" width={92} />
+            <span>
+              <span class="brand-name">HyTrack</span>
+              <span class="brand-tag">{situs.slogan}</span>
+            </span>
+          </a>
+          <p>Ambil nomor antrean, tahu kapan berangkat, dan ikuti kunjungan rawat jalanmu dari HP.</p>
+        </div>
+
+        <div class="footer-cols">
+          {
+            footer.map((kolom, i) => (
+              <section class="footer-col" aria-labelledby={`fk-${i}`}>
+                <h2 id={`fk-${i}`}>
+                  <button class="footer-toggle" type="button" aria-expanded="true" aria-controls={`fl-${i}`}>
+                    <span>{kolom.judul}</span>
+                    <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </button>
+                </h2>
+                <ul id={`fl-${i}`}>
+                  {kolom.tautan.map((t) => (
+                    <li>
+                      <a href={t.href} class={t.tombol ? 'footer-outline' : undefined}>
+                        {t.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
+        </div>
+
+        <div class="footer-bottom">
+          <span>© {tahun} HyTrack</span>
+          <nav aria-label="Dokumen">
+            <a href="/ketentuan">Ketentuan</a>
+            <a href="/privasi">Privasi</a>
+          </nav>
+          {
+            sosial.length > 0 && (
+              <ul class="footer-social" aria-label="Media sosial">
+                {sosial.map(([nama, url]) => (
+                  <li>
+                    <a href={url} rel="noopener">
+                      {nama}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+          {
+            situs.toko.googlePlay && (
+              <a href={situs.toko.googlePlay} rel="noopener">
+                Google Play
+              </a>
+            )
+          }
+          <span class="spacer"></span>
+          <TombolUnduh hanya="apk" ukuran="sm" gelap />
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Menu HP
+      const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
+      const nav = document.getElementById('menu-utama');
+      btn?.addEventListener('click', () => {
+        const buka = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', String(buka));
+        nav?.classList.toggle('open', buka);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && nav?.classList.contains('open')) {
+          nav.classList.remove('open');
+          btn?.setAttribute('aria-expanded', 'false');
+          btn?.focus();
+        }
+      });
+
+      // Footer: akordeon di HP (< 768px), selalu terbuka di layar lebar.
+      const mq = window.matchMedia('(max-width: 767px)');
+      const toggles = [...document.querySelectorAll<HTMLButtonElement>('.footer-toggle')];
+      const atur = (buka: boolean, t: HTMLButtonElement) => {
+        t.setAttribute('aria-expanded', String(buka));
+        const list = document.getElementById(t.getAttribute('aria-controls') || '');
+        if (list) list.hidden = !buka;
+      };
+      const sesuaikan = () => {
+        toggles.forEach((t) => {
+          if (mq.matches) {
+            atur(false, t);
+            t.removeAttribute('tabindex');
+          } else {
+            atur(true, t);
+            t.removeAttribute('aria-expanded');
+            t.setAttribute('tabindex', '-1');
+          }
+        });
+      };
+      toggles.forEach((t) =>
+        t.addEventListener('click', () => {
+          if (!mq.matches) return;
+          atur(t.getAttribute('aria-expanded') !== 'true', t);
+        }),
+      );
+      mq.addEventListener('change', sesuaikan);
+      sesuaikan();
+    </script>
+  </body>
+</html>

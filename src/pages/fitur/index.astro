@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import DaftarHalaman from '../../components/DaftarHalaman.astro';
+import { halamanFitur } from '../../data/halaman';
+---
+
+<Base judul="Fitur" deskripsi="Fitur HyTrack untuk pasien dan petugas, lengkap dengan status pengembangannya.">
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="crumbs"><a href="/">Beranda</a> / Fitur</p>
+      <span class="eyebrow">Produk</span>
+      <h1>Fitur HyTrack</h1>
+      <p class="lead">
+        Setiap halaman menjawab satu pertanyaan dan menulis status fiturnya apa adanya: berfungsi, berfungsi sebagian, atau
+        masih dalam pengembangan.
+      </p>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap">
+      <DaftarHalaman daftar={halamanFitur} />
+    </div>
+  </section>
+</Base>

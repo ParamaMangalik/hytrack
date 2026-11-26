@@ -1,0 +1,148 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Kepala from '../components/Kepala.astro';
+import Kontak from '../components/Kontak.astro';
+import { screenshots } from '../data/screenshots';
+
+const warna = [
+  { nama: 'Teal gelap', hex: '#0B3B37' },
+  { nama: 'Teal utama', hex: '#086F65' },
+  { nama: 'Teal terang', hex: '#188777' },
+  { nama: 'Mint', hex: '#5BBDB0' },
+  { nama: 'Mint pucat', hex: '#E1EFE7' },
+  { nama: 'Putih hangat', hex: '#FBFAF6' },
+];
+const galeri = [screenshots.beranda, screenshots.pilihPoli, screenshots.tiket, screenshots.dashboardPetugas];
+---
+
+<Base judul="Pusat Media" deskripsi="Logo, warna, deskripsi singkat, dan gambar layar HyTrack untuk media.">
+  <Kepala
+    judul="Pusat Media"
+    eyebrow="Media"
+    jejak={[{ label: 'Pusat Media' }]}
+    lead="Bahan untuk menulis atau mempresentasikan HyTrack: deskripsi singkat, logo, warna, dan gambar layar."
+  />
+
+  <section class="section-tight">
+    <div class="wrap media-grid">
+      <div class="card">
+        <h2 class="h2s">Deskripsi singkat</h2>
+        <p>
+          <strong>HyTrack</strong> adalah aplikasi antrean rawat jalan yang membantu pasien mengambil nomor antrean, mengetahui kapan
+          harus berangkat, dan mengikuti setiap tahap kunjungan, dari pemeriksaan dokter sampai pengambilan obat. Petugas menjalankan
+          antrean, check-in, laboratorium, dan farmasi dari satu dashboard.
+        </p>
+        <p class="kecil">Status: aplikasi demo dengan backend nyata; belum terhubung ke SIMRS atau BPJS.</p>
+      </div>
+
+      <div class="card">
+        <h2 class="h2s">Logo</h2>
+        <div class="logo-box">
+          <img src="/media/logo-hytrack-512.png" alt="Logo HyTrack" width="160" height="117" />
+        </div>
+        <a class="btn btn-secondary btn-sm" href="/media/logo-hytrack-512.png" download>Unduh logo (PNG)</a>
+        <p class="kecil">Jangan mengubah warna, merentangkan, atau menambahkan efek pada logo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-cream">
+    <div class="wrap">
+      <h2 class="h2s">Warna</h2>
+      <ul class="warna">
+        {
+          warna.map((w) => (
+            <li>
+              <span class="swatch" style={`background:${w.hex}`} />
+              <strong>{w.nama}</strong>
+              <code>{w.hex}</code>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2 class="h2s mt">Gambar layar</h2>
+      <p class="kecil">Diambil dari mode prototipe dengan data contoh. Nama pasien bukan orang sungguhan.</p>
+      <ul class="galeri">
+        {
+          galeri.map((g) => (
+            <li>
+              <Image src={g.src} alt={g.alt} widths={[300, 600]} sizes="(min-width: 900px) 260px, 45vw" />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="narrow">
+      <h2 class="h2s">Kontak media</h2>
+      <Kontak email="emailMedia" keperluan="media" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .media-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 860px) {
+    .media-grid {
+      grid-template-columns: 1.4fr 0.6fr;
+    }
+  }
+  .h2s {
+    font-size: 1.35rem;
+  }
+  .mt {
+    margin-top: 2.5rem;
+  }
+  .kecil {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .logo-box {
+    background: var(--warm);
+    border: 1px solid var(--card-line);
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .warna {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  .warna li {
+    display: grid;
+    gap: 0.2rem;
+    font-size: 0.92rem;
+  }
+  .swatch {
+    height: 72px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    margin-bottom: 0.4rem;
+  }
+  .galeri {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    align-items: start;
+  }
+  .galeri :global(img) {
+    border-radius: 14px;
+    border: 1px solid var(--card-line);
+  }
+</style>

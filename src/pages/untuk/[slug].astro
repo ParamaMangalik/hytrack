@@ -1,0 +1,11 @@
+---
+import TemplatHalaman from '../../components/TemplatHalaman.astro';
+import { halamanUntuk } from '../../data/halaman';
+
+export function getStaticPaths() {
+  return halamanUntuk.map((h) => ({ params: { slug: h.slug }, props: { h } }));
+}
+const { h } = Astro.props;
+---
+
+<TemplatHalaman h={h} />

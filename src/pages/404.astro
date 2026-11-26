@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import { situs } from '../config/situs';
+---
+
+<Base judul="Halaman tidak ditemukan">
+  <section class="section">
+    <div class="narrow nf">
+      <span class="eyebrow">404</span>
+      <h1>Halaman ini tidak ditemukan</h1>
+      <p class="lead">Mungkin alamatnya salah ketik atau halamannya sudah dipindah.</p>
+      <div class="cta-pair">
+        <a class="btn btn-primary" href="/">Ke beranda</a>
+        <a class="btn btn-secondary" href={situs.aplikasi.web}>Buka HyTrack Web</a>
+      </div>
+      <p class="mt">Atau lihat <a href="/panduan">Panduan</a> dan <a href="/bantuan">Kontak & Bantuan</a>.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    text-align: center;
+  }
+  .nf .lead {
+    margin-inline: auto;
+    margin-bottom: 2rem;
+  }
+  .nf .cta-pair {
+    justify-content: center;
+  }
+  .mt {
+    margin-top: 1.5rem;
+  }
+</style>

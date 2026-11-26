@@ -1,0 +1,182 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Kepala from '../../components/Kepala.astro';
+import { situs } from '../../config/situs';
+import { screenshots } from '../../data/screenshots';
+
+const langkah = [
+  {
+    judul: 'Buat akun',
+    isi: [
+      `Buka HyTrack Web atau aplikasi Android, lalu pilih Daftar sekarang.`,
+      'Isi nama lengkap sesuai identitas, nomor HP, dan kata sandi.',
+      'Ketik kode verifikasi 6 digit yang dikirim lewat WhatsApp. Kode berlaku 5 menit.',
+    ],
+    gambar: screenshots.beranda,
+    ket: 'Setelah masuk, beranda menampilkan tombol Ambil antrean.',
+  },
+  {
+    judul: 'Pilih poli',
+    isi: ['Tekan Ambil antrean.', 'Pilih poli. Perkiraan tunggu dan jumlah dokter praktik tertulis di setiap poli.'],
+    gambar: screenshots.pilihPoli,
+    ket: 'Daftar poli yang tersedia.',
+  },
+  {
+    judul: 'Pilih tanggal dan dokter',
+    isi: [
+      'Pilih tanggal kunjungan di baris kalender.',
+      'Pilih dokter dan jadwal praktiknya. Perhatikan sisa kuota.',
+      'Tekan Ambil antrean. Nomor terbit setelah tombol ini ditekan.',
+    ],
+    gambar: screenshots.jadwalDokter,
+    ket: 'Jadwal, perkiraan tunggu, dan sisa kuota.',
+  },
+  {
+    judul: 'Simpan tiket dan perhatikan jam berangkat',
+    isi: [
+      'Tiket menampilkan nomor antrean, dokter, dan jam praktik.',
+      'Kotak kuning menulis "Berangkat sebelum" dan batas check-in (15 menit sebelum praktik).',
+    ],
+    gambar: screenshots.tiket,
+    ket: 'Tiket kunjungan dengan jam berangkat.',
+  },
+  {
+    judul: 'Check-in dan pantau giliran',
+    isi: [
+      'Di rumah sakit, tekan Tampilkan QR check-in dan tunjukkan ke petugas di meja check-in.',
+      'Setelah check-in, pantau jumlah pasien yang menunggu dan nomor yang sedang dilayani.',
+      'Setelah diperiksa, ikuti tahap laboratorium atau farmasi bila ada.',
+    ],
+    gambar: screenshots.pantauAntrean,
+    ket: 'Status antrean setelah tiket terbit.',
+  },
+];
+---
+
+<Base judul="Mengambil antrean pertama" deskripsi="Langkah membuat akun HyTrack, mengambil nomor antrean, dan check-in di rumah sakit.">
+  <Kepala
+    judul="Mengambil antrean pertama"
+    eyebrow="Panduan"
+    jejak={[{ label: 'Panduan', href: '/panduan' }, { label: 'Mengambil antrean pertama' }]}
+    lead="Lima langkah dari membuat akun sampai check-in. Gambar diambil dari mode prototipe dengan data contoh."
+  />
+
+  <section class="section-tight">
+    <div class="wrap">
+      <ol class="ap">
+        {
+          langkah.map((l, i) => (
+            <li class="ap-item">
+              <div class="ap-text">
+                <span class="ap-n">Langkah {i + 1}</span>
+                <h2>{l.judul}</h2>
+                <ul>
+                  {l.isi.map((x) => (
+                    <li>{x}</li>
+                  ))}
+                </ul>
+              </div>
+              <figure class="ap-fig">
+                <div class="ap-phone">
+                  <Image src={l.gambar.src} alt={l.gambar.alt} widths={[260, 520]} sizes="240px" />
+                </div>
+                <figcaption>{l.ket}</figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="card penting">
+        <h2>Penting: QR tiket berbeda dengan QR di situs ini</h2>
+        <p>
+          QR check-in di tiketmu hanya ditunjukkan ke petugas saat tiba. QR di situs ini hanya membuka halaman unduhan.
+          <a href="/artikel/qr-situs-dan-qr-tiket">Baca perbedaannya</a>.
+        </p>
+      </div>
+
+      <div class="ap-cta">
+        <a class="btn btn-primary" href={situs.aplikasi.web}>Buka HyTrack Web</a>
+        <a class="btn btn-secondary" href="/fitur/antrean-langsung">Tentang Antrean Langsung</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ap {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 3rem;
+  }
+  .ap-item {
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 820px) {
+    .ap-item {
+      grid-template-columns: 1fr 280px;
+      gap: 3rem;
+    }
+  }
+  .ap-n {
+    display: inline-block;
+    font-weight: 750;
+    color: var(--teal-700);
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+  .ap-text h2 {
+    font-size: 1.6rem;
+  }
+  .ap-text ul {
+    padding-left: 1.2rem;
+    font-size: 1.05rem;
+  }
+  .ap-text li {
+    margin-bottom: 0.4rem;
+  }
+  .ap-fig {
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+    justify-items: center;
+  }
+  .ap-phone {
+    width: 240px;
+    border-radius: 30px;
+    padding: 8px;
+    background: #0d1f1d;
+    box-shadow: var(--shadow-lg);
+  }
+  .ap-phone :global(img) {
+    border-radius: 23px;
+  }
+  .ap-fig figcaption {
+    font-size: 0.86rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  .penting {
+    margin-top: 2.5rem;
+    border-left: 5px solid var(--focus);
+  }
+  .penting h2 {
+    font-size: 1.25rem;
+  }
+  .penting p {
+    margin: 0;
+  }
+  .ap-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+</style>

@@ -1,0 +1,115 @@
+---
+import Base from '../layouts/Base.astro';
+import Kepala from '../components/Kepala.astro';
+import Kontak from '../components/Kontak.astro';
+import Status from '../components/Status.astro';
+---
+
+<Base judul="Kerja Sama Fasilitas Kesehatan" deskripsi="Menjajaki HyTrack untuk layanan rawat jalan di rumah sakit atau klinikmu.">
+  <Kepala
+    judul="Membawa HyTrack ke fasilitas kesehatanmu"
+    eyebrow="Kerja sama"
+    jejak={[{ label: 'Kerja Sama Fasilitas Kesehatan' }]}
+    lead="Untuk rumah sakit dan klinik yang ingin pasien rawat jalannya tahu kapan berangkat dan ke mana setelah diperiksa."
+  />
+
+  <section class="section-tight">
+    <div class="wrap ks-grid">
+      <div class="prose">
+        <h2>Yang sudah bisa dipakai</h2>
+        <ul>
+          <li>Antrean per poli dan dokter dengan kuota harian, check-in QR, panggil dan tidak hadir.</li>
+          <li>Alur pemeriksaan dokter, pelayanan penunjang (laboratorium/radiologi), dan farmasi bertahap.</li>
+          <li>Layar pasien dan pendamping keluarga yang mengikuti setiap tahap.</li>
+          <li>Ringkasan layanan per tanggal dan poliklinik, ekspor CSV tanpa identitas pasien.</li>
+        </ul>
+
+        <h2>Yang perlu kamu ketahui</h2>
+        <table class="tabel">
+          <tbody>
+            <tr>
+              <th scope="row">Integrasi SIMRS</th>
+              <td><Status status="pengembangan" /></td>
+            </tr>
+            <tr>
+              <th scope="row">Integrasi BPJS</th>
+              <td><Status status="pengembangan" /></td>
+            </tr>
+            <tr>
+              <th scope="row">Pembayaran & kasir</th>
+              <td><Status status="pengembangan" /></td>
+            </tr>
+            <tr>
+              <th scope="row">Notifikasi WhatsApp/SMS/push</th>
+              <td><Status status="pengembangan" /></td>
+            </tr>
+            <tr>
+              <th scope="row">Pembaruan layar</th>
+              <td><Status status="sebagian" /> Polling setiap 15 detik</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="catatan">
+          HyTrack saat ini adalah aplikasi demo dengan backend nyata. Pemakaian dengan data pasien sungguhan memerlukan tinjauan
+          keamanan dan integrasi dengan sistem rumah sakit lebih dulu.
+        </p>
+
+        <h2>Langkah menjajaki</h2>
+        <ol class="steps">
+          <li>Ceritakan alur rawat jalan di tempatmu: jumlah poli, titik check-in, laboratorium, farmasi, dan kasir.</li>
+          <li>Kami menyiapkan demo dengan poli dan jadwal contoh yang mirip dengan tempatmu.</li>
+          <li>Bersama-sama kita tentukan apa yang perlu dihubungkan sebelum uji coba.</li>
+        </ol>
+      </div>
+      <aside class="card ks-side">
+        <h2>Hubungi tim</h2>
+        <Kontak email="emailKerjaSama" wa keperluan="kerja sama" />
+        <p class="mt">Sambil menunggu, lihat <a href="/fitur/dashboard-petugas">Dashboard Petugas</a> atau coba sisi pasien di <a href="https://hytrack-psas.vercel.app/">HyTrack Web</a>.</p>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ks-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 960px) {
+    .ks-grid {
+      grid-template-columns: 1.4fr 0.6fr;
+    }
+    .ks-side {
+      position: sticky;
+      top: 100px;
+    }
+  }
+  .prose h2:first-child {
+    margin-top: 0;
+  }
+  .tabel {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.25rem;
+    font-size: 0.98rem;
+  }
+  .tabel th,
+  .tabel td {
+    text-align: left;
+    padding: 0.7rem 0.5rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+  .tabel th {
+    font-weight: 600;
+    width: 45%;
+  }
+  .ks-side h2 {
+    font-size: 1.3rem;
+  }
+  .mt {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+</style>

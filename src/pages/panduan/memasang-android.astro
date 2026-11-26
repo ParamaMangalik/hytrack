@@ -1,0 +1,71 @@
+---
+import Base from '../../layouts/Base.astro';
+import Kepala from '../../components/Kepala.astro';
+import TombolUnduh from '../../components/TombolUnduh.astro';
+import { apkTersedia, situs } from '../../config/situs';
+---
+
+<Base judul="Memasang aplikasi Android" deskripsi="Cara memasang file APK HyTrack di HP Android dengan aman.">
+  <Kepala
+    judul="Memasang aplikasi Android"
+    eyebrow="Panduan"
+    jejak={[{ label: 'Panduan', href: '/panduan' }, { label: 'Memasang aplikasi Android' }]}
+    lead="HyTrack untuk Android dibagikan sebagai file APK dari situs ini, bukan dari Play Store. Ikuti langkah berikut."
+  />
+
+  <section class="section-tight">
+    <div class="narrow prose">
+      {
+        !apkTersedia && (
+          <div class="draf-banner" role="note">
+            <strong>APK belum dirilis.</strong> Langkah di bawah berlaku begitu file APK resmi tersedia di halaman Unduh. Sementara
+            itu, pakai <a href={situs.aplikasi.web}>HyTrack Web</a>.
+          </div>
+        )
+      }
+
+      <h2>Sebelum mulai</h2>
+      <ul>
+        <li>Pastikan HP-mu Android{situs.apk.androidMinimal ? ` (minimal ${situs.apk.androidMinimal})` : ''}. APK tidak bisa dipasang di iPhone.</li>
+        <li>Siapkan koneksi internet dan ruang penyimpanan{situs.apk.ukuran ? ` sekitar ${situs.apk.ukuran}` : ''}.</li>
+        <li>Unduh hanya dari halaman Unduh di situs ini.</li>
+      </ul>
+
+      <h2>Langkah memasang</h2>
+      <ol class="steps">
+        <li>Buka halaman <a href="/unduh">Unduh</a> di HP, atau pindai QR unduhan dari laptop.</li>
+        <li>Tekan <strong>Unduh untuk Android</strong>. Bila browser memperingatkan bahwa file dapat membahayakan, pastikan alamatnya dari situs ini, lalu pilih <strong>Tetap unduh</strong>.</li>
+        <li>Buka file yang selesai diunduh dari notifikasi atau aplikasi <strong>File</strong>/<strong>Unduhan</strong>.</li>
+        <li>Bila muncul pesan "pemasangan diblokir", tekan <strong>Setelan</strong>, aktifkan <strong>Izinkan dari sumber ini</strong> untuk browser yang kamu pakai, lalu kembali.</li>
+        <li>Tekan <strong>Instal</strong>, tunggu selesai, lalu tekan <strong>Buka</strong>.</li>
+        <li>Masuk dengan nomor HP yang sudah terdaftar, atau daftar akun baru.</li>
+      </ol>
+
+      <p class="catatan">
+        Nama menu bisa sedikit berbeda di setiap merek HP. Setelah HyTrack terpasang, kamu boleh mematikan lagi izin "sumber ini"
+        untuk browser.
+      </p>
+
+      <h2>Memperbarui atau menghapus</h2>
+      <ul>
+        <li>Versi baru diumumkan di halaman Unduh. Unduh dan pasang APK baru di atas versi lama; akunmu tetap.</li>
+        <li>Untuk menghapus, tekan lama ikon HyTrack lalu pilih <strong>Uninstal</strong>. Akunmu tetap bisa dipakai di HyTrack Web.</li>
+      </ul>
+
+      <div class="selanjutnya">
+        <TombolUnduh />
+        <p><a class="link-arrow" href="/panduan/antrean-pertama">Lanjut: mengambil antrean pertama</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .selanjutnya {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 1rem;
+  }
+</style>

@@ -1,0 +1,73 @@
+---
+/**
+ * QR yang membuka /unduh di HP. Dibuat saat build dari alamat publik situs
+ * (Astro.site, lihat astro.config.mjs), jadi tidak berisi data pengguna.
+ */
+import QRCode from 'qrcode';
+
+interface Props {
+  ukuran?: number;
+  label?: boolean;
+}
+const { ukuran = 168, label = true } = Astro.props;
+const tujuan = new URL('/unduh', Astro.site).href;
+const svg = await QRCode.toString(tujuan, {
+  type: 'svg',
+  errorCorrectionLevel: 'M',
+  margin: 1,
+  color: { dark: '#0b3b37', light: '#ffffff' },
+});
+const tampil = tujuan.replace(/^https?:\/\//, '');
+---
+
+<figure class="qr" data-qr-tujuan={tujuan}>
+  <div class="qr-box" style={`width:${ukuran}px`} role="img" aria-label={`QR untuk membuka ${tampil} di HP`}>
+    <Fragment set:html={svg} />
+  </div>
+  {
+    label && (
+      <figcaption>
+        <strong>Pindai dengan kamera HP</strong>
+        <span>Membuka halaman unduhan</span>
+        <span class="qr-url">{tampil}</span>
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .qr {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .qr-box {
+    background: #fff;
+    padding: 8px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(11, 59, 55, 0.14);
+    flex: none;
+  }
+  .qr-box :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+  .qr {
+    flex-wrap: wrap;
+  }
+  figcaption {
+    flex: 1 1 160px;
+    display: grid;
+    gap: 0.15rem;
+    font-size: 0.92rem;
+  }
+  figcaption strong {
+    font-size: 1rem;
+  }
+  .qr-url {
+    font-size: 0.82rem;
+    opacity: 0.8;
+    word-break: break-all;
+  }
+</style>

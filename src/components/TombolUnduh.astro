@@ -1,0 +1,54 @@
+---
+/**
+ * Dua tombol utama: Unduh untuk Android + Buka HyTrack Web.
+ * Urutan & penekanan diatur CSS menurut html[data-perangkat] dan ketersediaan APK.
+ */
+import Ikon from './Ikon.astro';
+import { apkTersedia, situs } from '../config/situs';
+
+interface Props {
+  hanya?: 'apk' | 'web';
+  ukuran?: 'sm' | 'md';
+  gelap?: boolean;
+  info?: boolean;
+}
+const { hanya, ukuran = 'md', gelap = false, info = false } = Astro.props;
+const sm = ukuran === 'sm' ? 'btn-sm' : '';
+const apkHref = apkTersedia ? situs.apk.url : '/unduh';
+const rincian = [situs.apk.versi && `Versi ${situs.apk.versi}`, situs.apk.ukuran].filter(Boolean).join(' · ');
+---
+
+{
+  hanya === 'apk' ? (
+    <a
+      class:list={['btn', gelap ? 'btn-ghost-light' : 'btn-primary', sm]}
+      href={apkHref}
+      download={apkTersedia ? '' : undefined}
+    >
+      <Ikon nama="android" />
+      Unduh untuk Android
+    </a>
+  ) : (
+    <div class:list={['cta-pair', { 'on-dark': gelap }]} data-apk={apkTersedia ? 'ada' : 'belum'}>
+      <a
+        class:list={['btn btn-primary cta-apk', sm]}
+        href={apkHref}
+        download={apkTersedia ? '' : undefined}
+        data-cta="apk"
+      >
+        <Ikon nama="android" />
+        <span class="two-line">
+          <span>Unduh untuk Android</span>
+          {info && <span class="sub">{apkTersedia ? rincian || 'File APK' : 'Segera tersedia'}</span>}
+        </span>
+      </a>
+      <a class:list={['btn btn-secondary cta-web', sm, { 'btn-light': gelap }]} href={situs.aplikasi.web} data-cta="web">
+        <Ikon nama="web" />
+        <span class="two-line">
+          <span>Buka HyTrack Web</span>
+          {info && <span class="sub">Tanpa pasang · semua HP</span>}
+        </span>
+      </a>
+    </div>
+  )
+}

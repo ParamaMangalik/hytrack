@@ -1,0 +1,29 @@
+---
+interface Props {
+  judul: string;
+  eyebrow?: string;
+  lead?: string;
+  jejak?: { label: string; href?: string }[];
+}
+const { judul, eyebrow, lead, jejak = [] } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="wrap">
+    <p class="crumbs">
+      <a href="/">Beranda</a>
+      {
+        jejak.map((j) => (
+          <>
+            {' / '}
+            {j.href ? <a href={j.href}>{j.label}</a> : <span>{j.label}</span>}
+          </>
+        ))
+      }
+    </p>
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h1>{judul}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    <slot />
+  </div>
+</section>

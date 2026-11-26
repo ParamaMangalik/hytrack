@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import Kepala from '../components/Kepala.astro';
+import Kontak from '../components/Kontak.astro';
+import Faq from '../components/Faq.astro';
+import Ikon from '../components/Ikon.astro';
+import { situs } from '../config/situs';
+---
+
+<Base judul="Kontak & Bantuan" deskripsi="Bantuan memakai HyTrack dan kontak tim.">
+  <Kepala
+    judul="Kontak & Bantuan"
+    eyebrow="Hubungi kami"
+    jejak={[{ label: 'Kontak & Bantuan' }]}
+    lead="Pilih jalur yang paling cepat untuk pertanyaanmu."
+  />
+
+  <section class="section-tight">
+    <div class="wrap grid grid-3 wrap-2">
+      <div class="card jalur">
+        <Ikon nama="tiket" ukuran={28} />
+        <h2>Soal kunjungan hari ini</h2>
+        <p>Nomor antrean, check-in, atau obat? Tanyakan langsung ke petugas di meja check-in atau loket farmasi rumah sakit.</p>
+      </div>
+      <div class="card jalur">
+        <Ikon nama="pesan" ukuran={28} />
+        <h2>Bantuan di aplikasi</h2>
+        <p>Setelah masuk ke aplikasi, buka halaman Bantuan atau tanya Hya untuk pertanyaan seputar antrean.</p>
+        <a class="link-arrow" href={situs.aplikasi.bantuan}>Masuk & buka bantuan aplikasi</a>
+      </div>
+      <div class="card jalur">
+        <Ikon nama="petugas" ukuran={28} />
+        <h2>Petugas</h2>
+        <p>Lupa kata sandi atau butuh akun? Hubungi pengelola HyTrack di unit kerjamu.</p>
+        <a class="link-arrow" href="/akses-petugas">Akses petugas</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-cream">
+    <div class="narrow">
+      <h2>Tim HyTrack</h2>
+      <p>Untuk masukan, laporan masalah, atau pertanyaan tentang HyTrack. Jangan kirimkan kata sandi, kode verifikasi, atau QR tiket.</p>
+      <Kontak wa keperluan="resmi" />
+      {situs.kontak.alamat && <p class="alamat">{situs.kontak.alamat}</p>}
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="narrow">
+      <h2>Pertanyaan umum</h2>
+      <Faq />
+      <p class="mt"><a class="link-arrow" href="/panduan">Lihat panduan langkah demi langkah</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .jalur h2 {
+    font-size: 1.2rem;
+    margin-top: 0.75rem;
+  }
+  .jalur :global(svg) {
+    color: var(--teal-700);
+  }
+  .jalur p {
+    color: var(--muted);
+  }
+  .alamat {
+    margin-top: 1rem;
+  }
+  .mt {
+    margin-top: 1.5rem;
+  }
+</style>

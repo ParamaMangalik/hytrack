@@ -1,0 +1,251 @@
+---
+/**
+ * Layar antrean di dalam bingkai HP, dibangun dengan HTML (bukan screenshot)
+ * mengikuti tampilan tiket aplikasi. Angka adalah contoh dari skenario demo README.
+ */
+---
+
+<div class="hp" role="img" aria-label="Contoh layar antrean HyTrack: nomor antreanmu A-027, sedang dilayani A-024, 3 pasien di depan, perkiraan tunggu 15 sampai 25 menit.">
+  <div class="hp-frame" aria-hidden="true">
+    <div class="hp-notch"></div>
+    <div class="hp-screen">
+      <div class="hp-top">
+        <span class="dot"></span> Terhubung <span class="muted">· diperbarui 08.41</span>
+      </div>
+      <p class="hp-label">Nomor antrean Anda</p>
+      <p class="hp-num">A-027</p>
+      <p class="hp-meta">Penyakit Dalam · dr. Rina Kusuma, Sp.PD</p>
+
+      <div class="hp-serving">
+        <div>
+          <p class="hp-label light">Sedang dilayani</p>
+          <p class="hp-serving-num">A-024</p>
+        </div>
+        <div class="hp-pulse" aria-hidden="true"></div>
+      </div>
+
+      <div class="hp-stats">
+        <div>
+          <strong>3 pasien</strong>
+          <span>di depan Anda</span>
+        </div>
+        <div>
+          <strong>15–25 mnt</strong>
+          <span>perkiraan tunggu</span>
+        </div>
+      </div>
+
+      <div class="hp-bar"><span style="width:62%"></span></div>
+
+      <p class="hp-label">Tahap kunjungan</p>
+      <ol class="hp-journey">
+        <li class="done">Check-in kedatangan</li>
+        <li class="now">Pemeriksaan dokter</li>
+        <li>Laboratorium</li>
+        <li>Farmasi</li>
+      </ol>
+
+      <div class="hp-go">
+        <strong>Sudah check-in · 08.30</strong>
+        <span>Tetap di sekitar ruang tunggu poli.</span>
+      </div>
+    </div>
+  </div>
+  <p class="hp-caption">Contoh tampilan · data ilustrasi</p>
+</div>
+
+<style>
+  .hp {
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+  }
+  .hp-frame {
+    position: relative;
+    width: min(320px, 82vw);
+    aspect-ratio: 9 / 18.6;
+    background: #0d1f1d;
+    border-radius: 46px;
+    padding: 12px;
+    box-shadow:
+      0 0 0 2px #2a3d3a inset,
+      var(--shadow-lg);
+  }
+  .hp-notch {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92px;
+    height: 24px;
+    border-radius: 14px;
+    background: #0d1f1d;
+    z-index: 2;
+  }
+  .hp-screen {
+    height: 100%;
+    border-radius: 36px;
+    background: linear-gradient(180deg, #eaf4ee 0%, var(--cream) 40%);
+    padding: 56px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: var(--ink);
+  }
+  .hp-top {
+    font-size: 0.72rem;
+    font-weight: 650;
+    color: var(--teal-700);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+  }
+  .hp-top .muted {
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--teal-600);
+    box-shadow: 0 0 0 3px rgba(24, 135, 119, 0.2);
+  }
+  .hp-label {
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+    margin: 0;
+  }
+  .hp-label.light {
+    color: var(--mint-300);
+  }
+  .hp-num {
+    font-size: 3.6rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    color: var(--teal-900);
+    margin: 0.1rem 0 0.2rem;
+  }
+  .hp-meta {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+  .hp-serving {
+    background: var(--teal-700);
+    background-image: linear-gradient(129deg, #086b62 0%, #188777 71.4%);
+    color: #fff;
+    border-radius: 18px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+  }
+  .hp-serving-num {
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.1;
+    color: #fff;
+  }
+  .hp-pulse {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--mint-300);
+    box-shadow: 0 0 0 6px rgba(169, 220, 207, 0.25);
+  }
+  .hp-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 0.9rem;
+  }
+  .hp-stats div {
+    background: #fff;
+    border: 1px solid var(--card-line);
+    border-radius: 14px;
+    padding: 0.6rem 0.7rem;
+    display: grid;
+  }
+  .hp-stats strong {
+    font-size: 0.98rem;
+    color: var(--teal-900);
+  }
+  .hp-stats span {
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+  .hp-bar {
+    height: 8px;
+    border-radius: 99px;
+    background: var(--mint-100);
+    overflow: hidden;
+    margin-bottom: 0.9rem;
+  }
+  .hp-bar span {
+    display: block;
+    height: 100%;
+    background: var(--teal-600);
+    border-radius: inherit;
+  }
+  .hp-journey {
+    list-style: none;
+    margin: 0.5rem 0 0.9rem;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+  .hp-journey li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .hp-journey li::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--mint-200);
+    background: #fff;
+    flex: none;
+  }
+  .hp-journey .done::before {
+    background: var(--teal-600);
+    border-color: var(--teal-600);
+  }
+  .hp-journey .now {
+    color: var(--teal-900);
+    font-weight: 700;
+  }
+  .hp-journey .now::before {
+    border-color: var(--teal-700);
+    box-shadow: 0 0 0 3px rgba(8, 111, 101, 0.18);
+  }
+  .hp-go {
+    margin-top: auto;
+    background: var(--mint-100);
+    border-radius: 14px;
+    padding: 0.7rem 0.85rem;
+    display: grid;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .hp-go strong {
+    color: var(--teal-800);
+    font-size: 0.82rem;
+  }
+  .hp-caption {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 0;
+  }
+</style>

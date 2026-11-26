@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import Kepala from '../components/Kepala.astro';
+import Ikon from '../components/Ikon.astro';
+
+const langkah = [
+  { judul: 'Hanya kunjunganmu sendiri', teks: 'Pasien hanya dapat melihat kunjungannya sendiri. Nomor telepon ditampilkan tersamar.' },
+  { judul: 'Akses menurut peran', teks: 'Petugas, dokter, farmasi, laboratorium, dan manajemen hanya melihat layar sesuai perannya. Petugas lain tidak dapat membaca catatan dokter atau resep.' },
+  { judul: 'QR check-in ditandatangani', teks: 'QR tiket ditandatangani server dan hanya berlaku untuk kunjungan itu pada tanggal layanannya.' },
+  { judul: 'Tautan pendamping tidak disimpan mentah', teks: 'Server hanya menyimpan sidik SHA-256 dari tautan pendamping. Tautan berakhir di hari layanan dan dapat dicabut.' },
+  { judul: 'Hasil penunjang di penyimpanan privat', teks: 'File hasil laboratorium tidak punya alamat publik dan hanya dapat diunduh dokter pengirim dan petugas penunjang.' },
+  { judul: 'Ekspor tanpa identitas', teks: 'Ringkasan dan ekspor CSV manajemen hanya berisi angka agregat, tanpa identitas pasien.' },
+  { judul: 'Hya tanpa identitas', teks: 'Chatbot Hya menjawab dari fakta antrean tanpa identitas pasien dan tidak memberi saran medis.' },
+  { judul: 'Kata sandi dan kode verifikasi', teks: 'Kata sandi disimpan dalam bentuk hash. Kode verifikasi pendaftaran berlaku 5 menit dengan batas 5 percobaan.' },
+];
+---
+
+<Base judul="Keamanan Data" deskripsi="Cara HyTrack melindungi data pasien dan petugas, beserta batasannya saat ini.">
+  <Kepala
+    judul="Keamanan data di HyTrack"
+    eyebrow="Keamanan Data"
+    jejak={[{ label: 'Keamanan Data' }]}
+    lead="Apa yang sudah dilakukan aplikasi untuk menjaga datamu, dan apa yang belum. Kami menulisnya apa adanya."
+  />
+
+  <section class="section-tight">
+    <div class="wrap">
+      <ul class="kd grid grid-2">
+        {
+          langkah.map((l) => (
+            <li class="card">
+              <Ikon nama="kunci" ukuran={26} />
+              <h2>{l.judul}</h2>
+              <p>{l.teks}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-cream">
+    <div class="narrow prose">
+      <h2>Batasan saat ini</h2>
+      <ul>
+        <li>HyTrack berstatus demo dengan backend nyata. Pemakaian dengan data pasien sungguhan memerlukan tinjauan keamanan lebih dulu.</li>
+        <li>Riwayat aktivitas petugas baru menampilkan pembaruan terakhir tiap tahap, belum audit log lengkap.</li>
+        <li>Belum ada reset kata sandi mandiri; akun internal diatur ulang oleh pengelola.</li>
+        <li>Penyimpanan file hasil penunjang untuk produksi perlu diarahkan ke penyimpanan privat yang persisten.</li>
+      </ul>
+      <h2>Situs ini</h2>
+      <p>
+        Situs informasi ini tidak memiliki formulir, tidak meminta login, dan tidak memasang pelacak iklan. QR di situs ini hanya
+        berisi alamat halaman unduhan.
+      </p>
+      <p>Menemukan celah keamanan? Laporkan lewat <a href="/bantuan">Kontak & Bantuan</a>. Jangan sertakan data pasien di laporanmu.</p>
+      <p><a class="link-arrow" href="/privasi">Baca Kebijakan Privasi</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .kd {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .kd :global(svg) {
+    color: var(--teal-700);
+    margin-bottom: 0.75rem;
+  }
+  .kd h2 {
+    font-size: 1.15rem;
+  }
+  .kd p {
+    color: var(--muted);
+    margin: 0;
+  }
+</style>

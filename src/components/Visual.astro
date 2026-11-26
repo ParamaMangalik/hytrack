@@ -1,0 +1,215 @@
+---
+import { Image } from 'astro:assets';
+import Ikon from './Ikon.astro';
+import { screenshots } from '../data/screenshots';
+import type { Visual } from '../data/halaman';
+
+interface Props {
+  visual: Visual;
+}
+const { visual } = Astro.props;
+const lebar = visual.jenis === 'gambar' && visual.kunci === 'dashboardPetugas';
+---
+
+<figure class:list={['vis', { lebar }]}>
+  {
+    visual.jenis === 'gambar' && (
+      <div class:list={['vis-img', lebar ? 'vis-desk' : 'vis-phone']}>
+        <Image
+          src={screenshots[visual.kunci].src}
+          alt={screenshots[visual.kunci].alt}
+          widths={lebar ? [640, 1100] : [300, 600]}
+          sizes={lebar ? '(min-width: 960px) 560px, 92vw' : '300px'}
+        />
+      </div>
+    )
+  }
+  {
+    visual.jenis === 'tahapan' && (
+      <div class="vis-steps">
+        <p class="vis-title">{visual.judul}</p>
+        {visual.sorot && (
+          <p class="vis-sorot">
+            <span>{visual.sorot.label}</span>
+            <strong>{visual.sorot.nilai}</strong>
+          </p>
+        )}
+        <ol>
+          {visual.tahap.map((t) => (
+            <li class={t.keadaan}>
+              <span class="mark" aria-hidden="true">
+                {t.keadaan === 'selesai' ? <Ikon nama="centang" ukuran={16} /> : null}
+              </span>
+              <span>
+                <strong>{t.label}</strong>
+                <span class="sr-only">
+                  {t.keadaan === 'selesai' ? ' (selesai)' : t.keadaan === 'aktif' ? ' (sedang berjalan)' : ' (berikutnya)'}
+                </span>
+                {t.catatan && <span class="note">{t.catatan}</span>}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    )
+  }
+  {
+    visual.jenis === 'kosong' && (
+      <div class="vis-empty">
+        <Ikon nama="kasir" ukuran={40} />
+        <span class="status status-pengembangan">Dalam pengembangan</span>
+      </div>
+    )
+  }
+  <figcaption>{visual.keterangan}</figcaption>
+</figure>
+
+<style>
+  .vis {
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+    justify-items: center;
+  }
+  .vis figcaption {
+    font-size: 0.88rem;
+    color: var(--muted);
+    text-align: center;
+    max-width: 44ch;
+  }
+  .vis-phone {
+    width: min(290px, 80vw);
+    border-radius: 34px;
+    padding: 9px;
+    background: #0d1f1d;
+    box-shadow: var(--shadow-lg);
+  }
+  .vis-phone :global(img) {
+    border-radius: 26px;
+  }
+  .vis-desk {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--card-line);
+    box-shadow: var(--shadow-lg);
+  }
+  .vis-steps {
+    width: min(380px, 100%);
+    background: #fff;
+    border: 1px solid var(--card-line);
+    border-radius: 24px;
+    padding: 1.4rem;
+    box-shadow: var(--shadow-lg);
+  }
+  .vis-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.9rem;
+  }
+  .vis-sorot {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    background: var(--mint-50);
+    border-radius: 14px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1rem;
+  }
+  .vis-sorot span {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .vis-sorot strong {
+    font-size: 1.7rem;
+    color: var(--teal-900);
+    letter-spacing: -0.02em;
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+  li {
+    display: flex;
+    gap: 0.85rem;
+    position: relative;
+    padding-bottom: 1.1rem;
+  }
+  li:last-child {
+    padding-bottom: 0;
+  }
+  li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 30px;
+    bottom: 4px;
+    width: 2px;
+    background: var(--mint-200);
+  }
+  li.selesai:not(:last-child)::after {
+    background: var(--teal-600);
+  }
+  .mark {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 2px solid var(--mint-200);
+    background: #fff;
+    color: #fff;
+  }
+  .selesai .mark {
+    background: var(--teal-600);
+    border-color: var(--teal-600);
+  }
+  .aktif .mark {
+    border-color: var(--teal-700);
+    box-shadow: 0 0 0 5px rgba(8, 111, 101, 0.15);
+    background: radial-gradient(circle, var(--teal-700) 0 5px, #fff 6px);
+  }
+  li strong {
+    display: block;
+    color: var(--teal-900);
+    font-size: 0.98rem;
+  }
+  li.nanti strong {
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .aktif strong::after {
+    content: 'Sekarang';
+    margin-left: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: var(--mint-100);
+    color: var(--teal-800);
+    padding: 0.1rem 0.45rem;
+    border-radius: 99px;
+    vertical-align: 0.15em;
+  }
+  .note {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .vis-empty {
+    width: min(380px, 100%);
+    aspect-ratio: 4 / 3;
+    border: 2px dashed var(--mint-200);
+    border-radius: 24px;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 1rem;
+    color: var(--info-ink);
+    background: #fff;
+  }
+</style>

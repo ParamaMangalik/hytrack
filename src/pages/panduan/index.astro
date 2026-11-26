@@ -1,0 +1,138 @@
+---
+import Base from '../../layouts/Base.astro';
+import Kepala from '../../components/Kepala.astro';
+import Ikon from '../../components/Ikon.astro';
+import QrUnduh from '../../components/QrUnduh.astro';
+---
+
+<Base judul="Panduan" deskripsi="Panduan memasang aplikasi Android HyTrack dan mengambil antrean pertama.">
+  <Kepala
+    judul="Mau mulai dari mana?"
+    eyebrow="Panduan"
+    jejak={[{ label: 'Panduan' }]}
+    lead="Pilih salah satu. Keduanya bisa diikuti dari HP dalam beberapa menit."
+  />
+
+  <section class="section-tight">
+    <div class="wrap grid grid-2">
+      <a class="card pilihan" href="/panduan/memasang-android">
+        <span class="p-ikon"><Ikon nama="android" ukuran={32} /></span>
+        <h2>Memasang aplikasi Android</h2>
+        <p>Mengunduh file APK resmi, mengizinkan pemasangan, dan membuka HyTrack pertama kali.</p>
+        <span class="link-arrow">Mulai panduan</span>
+      </a>
+      <a class="card pilihan" href="/panduan/antrean-pertama">
+        <span class="p-ikon"><Ikon nama="tiket" ukuran={32} /></span>
+        <h2>Mengambil antrean pertama</h2>
+        <p>Membuat akun, memilih poli dan dokter, mendapat tiket, lalu check-in di rumah sakit.</p>
+        <span class="link-arrow">Mulai panduan</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section-tight bg-cream" aria-labelledby="dua-qr">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Jangan tertukar</span>
+        <h2 id="dua-qr">Ada dua QR yang berbeda</h2>
+      </div>
+      <div class="grid grid-2">
+        <div class="card qr-jenis">
+          <span class="label-qr situs">QR di situs ini</span>
+          <h3>Membuka halaman unduhan</h3>
+          <p>
+            Tampil di layar laptop. Pindai dengan kamera HP untuk membuka halaman unduhan HyTrack. Isinya sama untuk semua orang
+            dan tidak berisi data pribadi.
+          </p>
+          <div class="qr-mini"><QrUnduh ukuran={120} label={false} /></div>
+        </div>
+        <div class="card qr-jenis">
+          <span class="label-qr tiket">QR di tiket kunjungan</span>
+          <h3>Ditunjukkan ke petugas saat check-in</h3>
+          <p>
+            Muncul di aplikasi setelah kamu mengambil antrean dan menekan <strong>Tampilkan QR check-in</strong>. QR ini milikmu,
+            berlaku untuk satu kunjungan di tanggal layanannya. Jangan dibagikan.
+          </p>
+          <div class="qr-tiket-ilustrasi" aria-hidden="true">
+            <Ikon nama="tiket" ukuran={40} />
+            <span>QR tiket tidak ditampilkan di situs ini</span>
+          </div>
+        </div>
+      </div>
+      <p class="mt"><a class="link-arrow" href="/artikel/qr-situs-dan-qr-tiket">Baca penjelasan lengkapnya</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pilihan {
+    display: grid;
+    gap: 0.4rem;
+    text-decoration: none;
+    color: var(--ink);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    transition: transform 0.15s;
+  }
+  .pilihan:hover {
+    transform: translateY(-3px);
+    border-color: var(--teal-600);
+    color: var(--ink);
+  }
+  .pilihan h2 {
+    font-size: 1.45rem;
+    margin-top: 0.75rem;
+  }
+  .pilihan p {
+    color: var(--muted);
+  }
+  .p-ikon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    background: var(--mint-100);
+    color: var(--teal-700);
+  }
+  .qr-jenis {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+  .label-qr {
+    justify-self: start;
+    font-size: 0.8rem;
+    font-weight: 750;
+    padding: 0.3rem 0.75rem;
+    border-radius: 99px;
+    letter-spacing: 0.02em;
+  }
+  .label-qr.situs {
+    background: var(--mint-100);
+    color: var(--teal-800);
+  }
+  .label-qr.tiket {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+  }
+  .qr-jenis h3 {
+    margin-top: 0.6rem;
+  }
+  .qr-jenis p {
+    color: var(--muted);
+  }
+  .qr-tiket-ilustrasi {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 2px dashed #e8cf98;
+    border-radius: 14px;
+    padding: 1rem;
+    color: var(--warn-ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .mt {
+    margin-top: 1.5rem;
+  }
+</style>

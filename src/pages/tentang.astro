@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import Ikon from '../components/Ikon.astro';
+import Menunggu from '../components/Menunggu.astro';
+import { situs } from '../config/situs';
+import { pengantarTim, tim } from '../data/tim';
+
+const inisial = (n: string) =>
+  n
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((x) => x[0]?.toUpperCase())
+    .join('');
+---
+
+<Base judul="Tentang HyTrack" deskripsi="Kenapa HyTrack dibuat, visi kami, dan tim di baliknya.">
+  <section class="cerita">
+    <div class="narrow">
+      <p class="crumbs"><a href="/">Beranda</a> / Tentang</p>
+      <span class="eyebrow">Tentang HyTrack</span>
+      <h1>Nomor antrean sudah di tangan. Lalu kapan berangkat?</h1>
+      <div class="cerita-isi">
+        <p>
+          Bayangkan Bu Ani. Pagi ini ia sudah mendapat nomor antrean poli penyakit dalam. Tetapi nomor itu tidak menjawab
+          pertanyaannya: jam berapa harus keluar rumah supaya tidak menunggu tiga jam, dan tidak juga terlambat?
+        </p>
+        <p>
+          Setelah diperiksa, dokter meminta cek darah lalu menebus obat. Bu Ani berdiri di lorong, memegang kertas, bertanya-tanya
+          ruang laboratorium ada di lantai berapa dan kapan obatnya siap.
+        </p>
+        <p class="cerita-tutup">
+          HyTrack dibuat untuk Bu Ani: <strong>satu tempat yang memberi tahu kapan berangkat, berapa lama lagi, dan ke mana
+          setelah ini.</strong>
+        </p>
+      </div>
+      <p class="ilustrasi-note">Bu Ani adalah tokoh ilustrasi, bukan pasien sungguhan.</p>
+    </div>
+  </section>
+
+  <section class="section bg-dark" aria-labelledby="visi">
+    <div class="narrow visi">
+      <span class="eyebrow">Visi</span>
+      <h2 id="visi">Berobat rawat jalan yang bisa diperkirakan, untuk pasien dan petugas.</h2>
+      <p class="lead">
+        Kami ingin setiap pasien tahu posisinya dalam antrean dan langkah berikutnya, dan setiap petugas punya satu layar yang
+        sama untuk menjalankan pelayanan.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="manfaat">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Manfaat</span>
+        <h2 id="manfaat">Satu kunjungan, dua sisi</h2>
+      </div>
+      <div class="grid grid-2 sisi">
+        <div class="card">
+          <h3><Ikon nama="pasien" ukuran={26} /> Bagi pasien & keluarga</h3>
+          <ul>
+            <li>Ambil nomor antrean dari rumah, tanpa datang subuh.</li>
+            <li>Tahu batas check-in dan jam berangkat.</li>
+            <li>Pantau nomor yang sedang dilayani dan perkiraan tunggu.</li>
+            <li>Ikuti tahap laboratorium dan farmasi, lengkap dengan ruangannya.</li>
+            <li>Keluarga bisa ikut memantau lewat tautan pendamping.</li>
+          </ul>
+          <a class="link-arrow" href="/untuk/pasien">Untuk pasien</a>
+        </div>
+        <div class="card">
+          <h3><Ikon nama="petugas" ukuran={26} /> Bagi petugas & fasilitas</h3>
+          <ul>
+            <li>Check-in dengan pindai QR tiket atau nomor check-in.</li>
+            <li>Panggil, panggil ulang, dan tandai tidak hadir dari satu layar.</li>
+            <li>Dokter, laboratorium, dan farmasi saling meneruskan pasien.</li>
+            <li>Lebih sedikit pertanyaan "nomor berapa sekarang?" di meja.</li>
+            <li>Manajemen melihat ringkasan layanan dan mengekspor data agregat.</li>
+          </ul>
+          <a class="link-arrow" href="/fitur/dashboard-petugas">Dashboard petugas</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-cream" aria-labelledby="tim">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Tim</span>
+        <h2 id="tim">Orang-orang di balik HyTrack</h2>
+        {pengantarTim && <p class="lead">{pengantarTim}</p>}
+      </div>
+      {
+        tim.length > 0 ? (
+          <ul class="tim">
+            {tim.map((a) => (
+              <li class="card anggota">
+                {a.foto ? (
+                  <img src={a.foto} alt={`Foto ${a.nama}`} width="120" height="120" loading="lazy" />
+                ) : (
+                  <span class="avatar" aria-hidden="true">
+                    {inisial(a.nama)}
+                  </span>
+                )}
+                <strong>{a.nama}</strong>
+                <span>{a.peran}</span>
+                {a.tautan && (
+                  <a href={a.tautan} rel="noopener">
+                    Profil
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <>
+            <Menunggu judul="Profil tim sedang disiapkan" file="src/data/tim.ts">
+              Nama, peran, dan foto anggota tim akan ditampilkan setelah setiap anggota memberi izin.
+            </Menunggu>
+            <ul class="tim contoh" aria-hidden="true">
+              {[1, 2, 3, 4].map(() => (
+                <li class="card anggota">
+                  <span class="avatar">?</span>
+                  <strong>Nama anggota</strong>
+                  <span>Peran</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+      <p class="bergabung">Ingin ikut membangun? <a href="/bergabung">Bergabung dengan tim</a></p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap penutup">
+      <h2>Lihat sendiri cara kerjanya</h2>
+      <div class="cta-pair">
+        <a class="btn btn-primary" href={situs.aplikasi.web}><Ikon nama="web" /> Coba HyTrack Web</a>
+        <a class="btn btn-secondary" href="/unduh"><Ikon nama="android" /> Kenali Aplikasi Android</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .cerita {
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+    background:
+      radial-gradient(700px 360px at 100% 0%, rgba(91, 189, 176, 0.2), transparent 65%),
+      var(--cream);
+  }
+  .cerita h1 {
+    font-size: clamp(2rem, 4.4vw, 3.1rem);
+  }
+  .cerita-isi {
+    font-size: clamp(1.08rem, 1.6vw, 1.22rem);
+    margin-top: 1.5rem;
+  }
+  .cerita-tutup {
+    border-left: 4px solid var(--teal-600);
+    padding-left: 1rem;
+    color: var(--teal-900);
+  }
+  .ilustrasi-note {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+  }
+  .visi h2 {
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  }
+  .sisi h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .sisi h3 :global(svg) {
+    color: var(--teal-700);
+  }
+  .sisi ul {
+    padding-left: 1.2rem;
+    margin: 0.5rem 0 1.25rem;
+  }
+  .sisi li {
+    margin-bottom: 0.45rem;
+  }
+  .tim {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  .tim.contoh {
+    opacity: 0.45;
+  }
+  .anggota {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 0.3rem;
+  }
+  .anggota img,
+  .avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+  }
+  .avatar {
+    display: grid;
+    place-items: center;
+    background: var(--mint-100);
+    color: var(--teal-800);
+    font-weight: 750;
+    font-size: 1.6rem;
+  }
+  .anggota strong {
+    color: var(--teal-900);
+  }
+  .anggota span {
+    color: var(--muted);
+    font-size: 0.93rem;
+  }
+  .bergabung {
+    margin-top: 1.5rem;
+  }
+  .penutup {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+  }
+  .penutup .cta-pair {
+    justify-content: center;
+  }
+</style>

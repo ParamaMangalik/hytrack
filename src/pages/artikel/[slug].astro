@@ -1,0 +1,92 @@
+---
+import Base from '../../layouts/Base.astro';
+import Kepala from '../../components/Kepala.astro';
+import { artikel, tanggalArtikel, type Artikel } from '../../data/artikel';
+
+export function getStaticPaths() {
+  return artikel.map((a) => ({ params: { slug: a.slug }, props: { a } }));
+}
+const { a } = Astro.props as { a: Artikel };
+const lain = artikel.filter((x) => x.slug !== a.slug).slice(0, 3);
+---
+
+<Base judul={a.judul} deskripsi={a.ringkas}>
+  <Kepala judul={a.judul} eyebrow={a.kategori} jejak={[{ label: 'Artikel', href: '/artikel' }, { label: a.judul }]} lead={a.ringkas}>
+    <p class="meta">{tanggalArtikel(a.terbit)} · {a.menitBaca} menit baca</p>
+  </Kepala>
+
+  <article class="section-tight">
+    <div class="narrow prose">
+      {
+        a.isi.map((b) =>
+          'p' in b ? (
+            <p>{b.p}</p>
+          ) : 'h' in b ? (
+            <h2>{b.h}</h2>
+          ) : 'ol' in b ? (
+            <ol>
+              {b.ol.map((x) => (
+                <li>{x}</li>
+              ))}
+            </ol>
+          ) : 'ul' in b ? (
+            <ul>
+              {b.ul.map((x) => (
+                <li>{x}</li>
+              ))}
+            </ul>
+          ) : (
+            <p class="catatan">{b.catatan}</p>
+          ),
+        )
+      }
+      {
+        a.terkait && (
+          <p class="terkait">
+            <a class="link-arrow" href={a.terkait.href}>
+              {a.terkait.label}
+            </a>
+          </p>
+        )
+      }
+    </div>
+  </article>
+
+  <section class="section-tight bg-cream">
+    <div class="narrow">
+      <h2 class="h-lain">Artikel lainnya</h2>
+      <ul class="lain">
+        {
+          lain.map((x) => (
+            <li>
+              <a href={`/artikel/${x.slug}`}>{x.judul}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <p><a class="link-arrow" href="/artikel">Semua artikel</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .meta {
+    margin: 1rem 0 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+  .terkait {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .h-lain {
+    font-size: 1.3rem;
+  }
+  .lain {
+    padding-left: 1.2rem;
+  }
+  .lain li {
+    margin-bottom: 0.5rem;
+  }
+</style>

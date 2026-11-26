@@ -1,0 +1,78 @@
+---
+import Status from './Status.astro';
+import { urlHalaman, type Halaman } from '../data/halaman';
+interface Props {
+  daftar: Halaman[];
+}
+const { daftar } = Astro.props;
+---
+
+<ul class="dh">
+  {
+    daftar.map((h) => (
+      <li>
+        <a href={urlHalaman(h)}>
+          <span class="dh-top">
+            <strong>{h.label}</strong>
+            <Status status={h.status} />
+          </span>
+          <span class="dh-q">{h.pertanyaan}</span>
+          <span class="link-arrow">Baca</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .dh {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 720px) {
+    .dh {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .dh {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .dh a {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+    height: 100%;
+    padding: 1.35rem;
+    background: #fff;
+    border: 1px solid var(--card-line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+  .dh a:hover {
+    border-color: var(--teal-600);
+  }
+  .dh-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .dh-top strong {
+    font-size: 1.15rem;
+    color: var(--teal-900);
+  }
+  .dh-q {
+    color: var(--muted);
+  }
+  .dh .link-arrow {
+    color: var(--teal-700);
+  }
+</style>

@@ -1,0 +1,64 @@
+---
+/** Menampilkan kontak resmi dari src/config/situs.ts, atau penanda bila belum diisi. */
+import Menunggu from './Menunggu.astro';
+import { situs } from '../config/situs';
+
+interface Props {
+  email?: 'email' | 'emailMedia' | 'emailKerjaSama' | 'emailKarier';
+  wa?: boolean;
+  keperluan: string;
+}
+const { email = 'email', wa = false, keperluan } = Astro.props;
+const alamatEmail = situs.kontak[email] || situs.kontak.email;
+const adaWa = wa && situs.kontak.whatsappLink;
+---
+
+{
+  alamatEmail || adaWa ? (
+    <ul class="kontak">
+      {alamatEmail && (
+        <li>
+          <span>Email</span>
+          <a href={`mailto:${alamatEmail}`}>{alamatEmail}</a>
+        </li>
+      )}
+      {adaWa && (
+        <li>
+          <span>WhatsApp</span>
+          <a href={situs.kontak.whatsappLink} rel="noopener">
+            {situs.kontak.whatsapp || 'Kirim pesan'}
+          </a>
+        </li>
+      )}
+      {situs.kontak.jamLayanan && (
+        <li>
+          <span>Jam layanan</span>
+          {situs.kontak.jamLayanan}
+        </li>
+      )}
+    </ul>
+  ) : (
+    <Menunggu judul={`Kontak ${keperluan} belum diumumkan`} file="src/config/situs.ts (bagian kontak)">
+      Kontak resmi akan ditampilkan di sini setelah ditetapkan tim HyTrack.
+    </Menunggu>
+  )
+}
+
+<style>
+  .kontak {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .kontak li {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1rem;
+  }
+  .kontak span {
+    color: var(--muted);
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import DaftarHalaman from '../../components/DaftarHalaman.astro';
+import { halamanUntuk } from '../../data/halaman';
+---
+
+<Base judul="Untuk Siapa" deskripsi="HyTrack untuk pasien, keluarga, dan petugas di setiap titik layanan rawat jalan.">
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="crumbs"><a href="/">Beranda</a> / Untuk Siapa</p>
+      <span class="eyebrow">Untuk Siapa</span>
+      <h1>Satu kunjungan, banyak orang yang terlibat</h1>
+      <p class="lead">Pilih peranmu untuk melihat apa yang kamu lihat dan lakukan di HyTrack.</p>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="wrap">
+      <DaftarHalaman daftar={halamanUntuk} />
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,10 @@
+---
+import type { Status } from '../data/halaman';
+interface Props {
+  status: Status;
+}
+const { status } = Astro.props;
+const teks = { berfungsi: 'Berfungsi', sebagian: 'Berfungsi sebagian', pengembangan: 'Dalam pengembangan' }[status];
+---
+
+<span class={`status status-${status}`}>{teks}</span>

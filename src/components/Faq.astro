@@ -1,0 +1,65 @@
+---
+import { faq } from '../data/faq';
+---
+
+<div class="faq">
+  {
+    faq.map((f) => (
+      <details>
+        <summary>{f.q}</summary>
+        <div class="faq-a">
+          <p>{f.a}</p>
+          {f.href && (
+            <a class="link-arrow" href={f.href}>
+              {f.hrefLabel}
+            </a>
+          )}
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq {
+    display: grid;
+    gap: 0.75rem;
+  }
+  details {
+    background: #fff;
+    border: 1px solid var(--card-line);
+    border-radius: 16px;
+  }
+  summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 1.1rem 3rem 1.1rem 1.25rem;
+    font-weight: 650;
+    position: relative;
+    color: var(--teal-900);
+    min-height: 44px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::after {
+    content: '+';
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--teal-700);
+  }
+  details[open] summary::after {
+    content: '−';
+  }
+  .faq-a {
+    padding: 0 1.25rem 1.2rem;
+    color: var(--muted);
+  }
+  .faq-a p {
+    margin-bottom: 0.5rem;
+  }
+</style>

@@ -1,0 +1,324 @@
+---
+import Base from '../layouts/Base.astro';
+import HpAntrean from '../components/HpAntrean.astro';
+import TombolUnduh from '../components/TombolUnduh.astro';
+import QrUnduh from '../components/QrUnduh.astro';
+import Trailer from '../components/Trailer.astro';
+import Ikon from '../components/Ikon.astro';
+import Faq from '../components/Faq.astro';
+import { apkTersedia, situs, tanggalIndonesia } from '../config/situs';
+import { manfaatUtama } from '../data/halaman';
+---
+
+<Base judul="Beranda">
+  <!-- Pembuka -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <span class="chip"><Ikon nama="antrean" ukuran={16} /> Antrean rawat jalan</span>
+        <h1>Pantau antreanmu sebelum berangkat.</h1>
+        <p class="lead">Pilih poli dan dokter, ambil nomor antrean, lalu ikuti perkembangan kunjunganmu dari HP.</p>
+        <TombolUnduh />
+        <p class="cta-note">
+          {apkTersedia ? 'Aplikasi Android berupa file APK.' : 'APK Android segera tersedia.'} HyTrack Web bisa dipakai di semua
+          HP, termasuk iPhone.
+        </p>
+      </div>
+      <div class="hero-visual">
+        <HpAntrean />
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. Unduh -->
+  <section class="section-tight bg-mint" id="unduh" aria-labelledby="unduh-judul">
+    <div class="wrap unduh-grid">
+      <div>
+        <span class="eyebrow">Unduh</span>
+        <h2 id="unduh-judul">Pakai HyTrack dengan cara yang cocok untukmu</h2>
+        <p class="lead">
+          Pasang aplikasi Android, atau langsung buka HyTrack Web dari browser. Akun dan antreanmu sama di keduanya.
+        </p>
+        <TombolUnduh info />
+        <p class="perangkat-ios-only cta-note">
+          Kamu memakai iPhone: aplikasi iOS belum tersedia, jadi buka HyTrack Web di Safari.
+        </p>
+        <p class="perangkat-android-only cta-note">
+          {apkTersedia ? 'Kamu memakai Android: unduh APK lalu ikuti cara memasangnya.' : 'Kamu memakai Android: sambil menunggu APK, pakai HyTrack Web dulu.'}
+        </p>
+        <dl class="rilis">
+          {
+            apkTersedia ? (
+              <>
+                {situs.apk.versi && (
+                  <div>
+                    <dt>Versi</dt>
+                    <dd>{situs.apk.versi}</dd>
+                  </div>
+                )}
+                {situs.apk.ukuran && (
+                  <div>
+                    <dt>Ukuran</dt>
+                    <dd>{situs.apk.ukuran}</dd>
+                  </div>
+                )}
+                {situs.apk.tanggal && (
+                  <div>
+                    <dt>Rilis</dt>
+                    <dd>{tanggalIndonesia(situs.apk.tanggal)}</dd>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div>
+                <dt>Status APK</dt>
+                <dd>Segera tersedia</dd>
+              </div>
+            )
+          }
+        </dl>
+        <a class="link-arrow" href="/panduan/memasang-android">Lihat cara memasang</a>
+      </div>
+      <div class="qr-card card">
+        <p class="qr-head">Sedang di laptop?</p>
+        <QrUnduh ukuran={176} />
+        <p class="qr-foot">QR ini hanya membuka halaman unduhan. Bukan QR check-in.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Trailer -->
+  <section class="section bg-dark" id="trailer" aria-labelledby="trailer-judul">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Trailer</span>
+        <h2 id="trailer-judul">Dari memilih poli sampai memantau giliran</h2>
+        <p class="lead">Empat langkah yang kamu lalui di HyTrack sebelum tiba di ruang periksa.</p>
+      </div>
+      <Trailer />
+    </div>
+  </section>
+
+  <!-- 3. Tiga manfaat -->
+  <section class="section" aria-labelledby="manfaat-judul">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Kenapa HyTrack</span>
+        <h2 id="manfaat-judul">Lebih sedikit menunggu tanpa kepastian</h2>
+      </div>
+      <ul class="manfaat grid grid-3">
+        {
+          manfaatUtama.map((m) => (
+            <li>
+              <a class="card manfaat-card" href={m.href}>
+                <span class="manfaat-ikon">
+                  <Ikon nama={m.ikon} ukuran={28} />
+                </span>
+                <h3>{m.judul}</h3>
+                <p>{m.teks}</p>
+                <span class="link-arrow">Lihat fiturnya</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4. Dua jalur -->
+  <section class="section-tight bg-cream" aria-labelledby="jalur-judul">
+    <div class="wrap">
+      <h2 id="jalur-judul" class="sr-only">Pilih jalurmu</h2>
+      <div class="jalur grid grid-2">
+        <article class="jalur-card pasien">
+          <Ikon nama="pasien" ukuran={36} />
+          <h3>Saya ingin berobat</h3>
+          <p>Daftar dengan nomor HP, ambil antrean, dan ketahui kapan harus berangkat.</p>
+          <div class="jalur-cta">
+            <a class="btn btn-light" href={situs.aplikasi.web}>Buka HyTrack Web</a>
+            <a class="btn btn-ghost-light" href="/panduan/antrean-pertama">Panduan antrean pertama</a>
+          </div>
+        </article>
+        <article class="jalur-card petugas">
+          <Ikon nama="petugas" ukuran={36} />
+          <h3>Saya petugas</h3>
+          <p>Jalankan antrean poli, check-in pasien, dan teruskan ke laboratorium atau farmasi.</p>
+          <div class="jalur-cta">
+            <a class="btn btn-primary" href={situs.aplikasi.masukPetugas}>Masuk Petugas</a>
+            <a class="btn btn-secondary" href="/akses-petugas">Belum punya akses?</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. FAQ -->
+  <section class="section" id="faq" aria-labelledby="faq-judul">
+    <div class="narrow">
+      <div class="section-head center">
+        <span class="eyebrow">Pertanyaan umum</span>
+        <h2 id="faq-judul">Yang sering ditanyakan</h2>
+      </div>
+      <Faq />
+      <p class="faq-more">Masih bingung? <a href="/bantuan">Kontak & Bantuan</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 6vw, 5rem);
+    background:
+      radial-gradient(700px 420px at 85% 30%, rgba(91, 189, 176, 0.28), transparent 65%),
+      radial-gradient(500px 300px at 0% 100%, rgba(225, 239, 231, 0.9), transparent 70%),
+      var(--warm);
+  }
+  .hero-grid {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero-grid {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+  .hero h1 {
+    margin-top: 1rem;
+    max-width: 14ch;
+  }
+  .hero .lead {
+    margin-bottom: 2rem;
+  }
+  .unduh-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .unduh-grid {
+      grid-template-columns: 1.3fr 0.7fr;
+    }
+  }
+  .unduh-grid .lead {
+    margin-bottom: 1.75rem;
+  }
+  .rilis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    margin: 1.5rem 0 1rem;
+  }
+  .rilis dt {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .rilis dd {
+    margin: 0;
+    font-weight: 700;
+    color: var(--teal-900);
+  }
+  .qr-card {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+  .qr-head {
+    font-weight: 750;
+    font-size: 1.15rem;
+    color: var(--teal-900);
+    margin: 0;
+  }
+  .qr-foot {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+  }
+  /* QR hanya untuk layar lebar (desktop/laptop). */
+  @media (max-width: 899px) {
+    .qr-card {
+      display: none;
+    }
+  }
+  html[data-perangkat='android'] .qr-card,
+  html[data-perangkat='ios'] .qr-card {
+    display: none;
+  }
+  .manfaat {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .manfaat-card {
+    display: grid;
+    align-content: start;
+    gap: 0.25rem;
+    height: 100%;
+    text-decoration: none;
+    color: var(--ink);
+    transition:
+      transform 0.15s,
+      border-color 0.15s;
+  }
+  .manfaat-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--teal-600);
+    color: var(--ink);
+  }
+  .manfaat-card p {
+    color: var(--muted);
+  }
+  .manfaat-ikon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: var(--mint-100);
+    color: var(--teal-700);
+    margin-bottom: 1rem;
+  }
+  .manfaat-card .link-arrow {
+    color: var(--teal-700);
+    margin-top: auto;
+  }
+  .jalur-card {
+    border-radius: 24px;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+  .jalur-card h3 {
+    font-size: 1.6rem;
+    margin-top: 0.75rem;
+  }
+  .jalur-card.pasien {
+    background: linear-gradient(140deg, var(--teal-700), var(--teal-900));
+    color: #e6f3ed;
+  }
+  .jalur-card.pasien h3 {
+    color: #fff;
+  }
+  .jalur-card.petugas {
+    background: #fff;
+    border: 1px solid var(--card-line);
+    color: var(--ink);
+  }
+  .jalur-card.petugas :global(svg) {
+    color: var(--teal-700);
+  }
+  .jalur-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  .faq-more {
+    text-align: center;
+    margin-top: 2rem;
+  }
+</style>

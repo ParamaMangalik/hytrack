@@ -1,0 +1,388 @@
+---
+/**
+ * Trailer beranda. Bila situs.trailer.video diisi → pemutar video.
+ * Bila belum → urutan screenshot berketerangan dengan poster, tombol putar, dan kontrol.
+ */
+import { Image } from 'astro:assets';
+import Ikon from './Ikon.astro';
+import { situs, trailerTersedia } from '../config/situs';
+import { screenshots } from '../data/screenshots';
+
+const adegan = [
+  { s: screenshots.pilihPoli, judul: 'Pilih poli', teks: 'Lihat poli yang buka hari ini, jumlah dokter praktik, dan perkiraan tunggunya.' },
+  { s: screenshots.jadwalDokter, judul: 'Pilih jadwal', teks: 'Pilih tanggal dan dokter. Jam praktik dan sisa kuota terlihat sebelum kamu memutuskan.' },
+  { s: screenshots.tiket, judul: 'Dapat tiket', teks: 'Nomor antrean terbit, lengkap dengan batas check-in dan jam "Berangkat sebelum".' },
+  { s: screenshots.pantauAntrean, judul: 'Pantau antrean', teks: 'Ikuti jumlah pasien yang menunggu dan nomor yang sedang dilayani dari HP.' },
+];
+---
+
+{
+  trailerTersedia ? (
+    <div class="trailer-video">
+      <video controls preload="none" poster={situs.trailer.poster || undefined} playsinline>
+        <source src={situs.trailer.video} />
+        {situs.trailer.teks && <track kind="captions" srclang="id" label="Indonesia" src={situs.trailer.teks} default />}
+        Browser kamu tidak dapat memutar video ini. <a href={situs.trailer.video}>Unduh videonya</a>.
+      </video>
+    </div>
+  ) : (
+    <div class="tr" data-trailer data-state="poster">
+      <div class="tr-stage">
+        <div class="tr-phone">
+          {adegan.map((a, i) => (
+            <figure class:list={['tr-slide', { on: i === 0 }]} data-slide={i} aria-hidden={i === 0 ? 'false' : 'true'}>
+              <Image src={a.s.src} alt={a.s.alt} widths={[300, 560]} sizes="280px" loading="lazy" />
+            </figure>
+          ))}
+          <button class="tr-poster" type="button" data-play aria-label="Putar trailer: pilih poli, jadwal, tiket, pantau antrean">
+            <span class="tr-play">
+              <Ikon nama="putar" ukuran={34} />
+            </span>
+            <span class="tr-poster-text">Putar trailer · ±16 detik</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="tr-side">
+        <ol class="tr-chapters">
+          {adegan.map((a, i) => (
+            <li>
+              <button type="button" data-goto={i} aria-current={i === 0 ? 'step' : undefined}>
+                <span class="tr-n">{i + 1}</span>
+                <span>
+                  <strong>{a.judul}</strong>
+                  <span class="tr-desc">{a.teks}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ol>
+
+        <div class="tr-controls" role="group" aria-label="Kontrol trailer">
+          <button type="button" data-prev aria-label="Adegan sebelumnya">
+            <Ikon nama="kiri" />
+          </button>
+          <button type="button" data-toggle class="tr-main" aria-label="Putar">
+            <Ikon nama="putar" class="i-play" />
+            <Ikon nama="jeda" class="i-pause" />
+          </button>
+          <button type="button" data-next aria-label="Adegan berikutnya">
+            <Ikon nama="kanan" />
+          </button>
+          <div class="tr-progress" aria-hidden="true">
+            {adegan.map(() => (
+              <span>
+                <i />
+              </span>
+            ))}
+          </div>
+          <span class="tr-count" aria-live="polite">
+            1 / {adegan.length}
+          </span>
+        </div>
+        <p class="tr-note">
+          Video trailer sedang disiapkan. Sementara ini, urutan layar diambil dari mode prototipe dengan data contoh.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const DURASI = 4000;
+  document.querySelectorAll<HTMLElement>('[data-trailer]').forEach((root) => {
+    const slides = [...root.querySelectorAll<HTMLElement>('.tr-slide')];
+    const chapters = [...root.querySelectorAll<HTMLButtonElement>('[data-goto]')];
+    const bars = [...root.querySelectorAll<HTMLElement>('.tr-progress i')];
+    const toggle = root.querySelector<HTMLButtonElement>('[data-toggle]')!;
+    const count = root.querySelector<HTMLElement>('.tr-count')!;
+    let i = 0;
+    let timer: number | undefined;
+    let mulai = 0;
+    let raf = 0;
+
+    const tampil = (n: number) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => {
+        s.classList.toggle('on', k === i);
+        s.setAttribute('aria-hidden', String(k !== i));
+      });
+      chapters.forEach((c, k) => (k === i ? c.setAttribute('aria-current', 'step') : c.removeAttribute('aria-current')));
+      bars.forEach((b, k) => (b.style.width = k < i ? '100%' : '0%'));
+      count.textContent = `${i + 1} / ${slides.length}`;
+      mulai = performance.now();
+    };
+    const animasi = () => {
+      const p = Math.min(1, (performance.now() - mulai) / DURASI);
+      if (bars[i]) bars[i].style.width = `${p * 100}%`;
+      raf = requestAnimationFrame(animasi);
+    };
+    const jalan = () => {
+      root.dataset.state = 'playing';
+      toggle.setAttribute('aria-label', 'Jeda');
+      mulai = performance.now();
+      clearInterval(timer);
+      timer = window.setInterval(() => {
+        if (i === slides.length - 1) {
+          berhenti();
+          bars[i].style.width = '100%';
+          return;
+        }
+        tampil(i + 1);
+      }, DURASI);
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(animasi);
+    };
+    const berhenti = () => {
+      root.dataset.state = 'paused';
+      toggle.setAttribute('aria-label', 'Putar');
+      clearInterval(timer);
+      cancelAnimationFrame(raf);
+    };
+
+    root.querySelector('[data-play]')?.addEventListener('click', () => {
+      tampil(0);
+      jalan();
+      toggle.focus();
+    });
+    toggle.addEventListener('click', () => {
+      if (root.dataset.state === 'playing') return berhenti();
+      if (root.dataset.state !== 'paused' || i === slides.length - 1) tampil(i === slides.length - 1 ? 0 : i);
+      jalan();
+    });
+    root.querySelector('[data-prev]')?.addEventListener('click', () => {
+      tampil(i - 1);
+      if (root.dataset.state === 'playing') jalan();
+      else root.dataset.state = 'paused';
+    });
+    root.querySelector('[data-next]')?.addEventListener('click', () => {
+      tampil(i + 1);
+      if (root.dataset.state === 'playing') jalan();
+      else root.dataset.state = 'paused';
+    });
+    chapters.forEach((c, k) =>
+      c.addEventListener('click', () => {
+        tampil(k);
+        if (root.dataset.state === 'playing') jalan();
+        else root.dataset.state = 'paused';
+      }),
+    );
+    tampil(0);
+  });
+</script>
+
+<style>
+  .trailer-video video {
+    width: 100%;
+    border-radius: var(--radius);
+    background: #000;
+  }
+  .tr {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (min-width: 860px) {
+    .tr {
+      grid-template-columns: minmax(280px, 360px) 1fr;
+      gap: 3.5rem;
+    }
+  }
+  .tr-stage {
+    display: grid;
+    justify-items: center;
+  }
+  .tr-phone {
+    position: relative;
+    width: min(290px, 78vw);
+    aspect-ratio: 390 / 844;
+    border-radius: 38px;
+    background: #0d1f1d;
+    padding: 10px;
+    box-shadow:
+      0 0 0 2px #2a3d3a inset,
+      0 30px 60px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+  }
+  .tr-slide {
+    position: absolute;
+    inset: 10px;
+    margin: 0;
+    border-radius: 29px;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    background: var(--cream);
+  }
+  .tr-slide.on {
+    opacity: 1;
+  }
+  .tr-slide :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+  .tr-poster {
+    position: absolute;
+    inset: 10px;
+    border-radius: 29px;
+    border: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.9rem;
+    background: linear-gradient(180deg, rgba(8, 46, 43, 0.35), rgba(8, 46, 43, 0.82));
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+  }
+  .tr:not([data-state='poster']) .tr-poster {
+    display: none;
+  }
+  .tr-play {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    color: var(--teal-700);
+    padding-left: 5px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s;
+  }
+  .tr-poster:hover .tr-play {
+    transform: scale(1.06);
+  }
+  .tr-poster-text {
+    font-weight: 650;
+    font-size: 0.95rem;
+  }
+  .tr-chapters {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .tr-chapters button {
+    all: unset;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    cursor: pointer;
+    color: #cfe3da;
+    border: 1px solid transparent;
+  }
+  .tr-chapters button:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .tr-chapters button:focus-visible {
+    outline: 3px solid var(--focus);
+  }
+  .tr-chapters button[aria-current='step'] {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(169, 220, 207, 0.35);
+    color: #fff;
+  }
+  .tr-chapters strong {
+    display: block;
+    font-size: 1.05rem;
+    color: #fff;
+  }
+  .tr-desc {
+    display: block;
+    font-size: 0.93rem;
+    margin-top: 0.15rem;
+  }
+  .tr-n {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(169, 220, 207, 0.18);
+    color: var(--mint-300);
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  [aria-current='step'] .tr-n {
+    background: var(--mint-300);
+    color: var(--teal-950);
+  }
+  .tr-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .tr-controls button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    background: transparent;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .tr-controls button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .tr-controls .tr-main {
+    width: 52px;
+    height: 52px;
+    background: #fff;
+    color: var(--teal-800);
+    border-color: #fff;
+  }
+  .tr-controls .tr-main:hover {
+    background: var(--mint-100);
+  }
+  .tr :global(.i-pause) {
+    display: none;
+  }
+  .tr[data-state='playing'] :global(.i-pause) {
+    display: block;
+  }
+  .tr[data-state='playing'] :global(.i-play) {
+    display: none;
+  }
+  .tr-progress {
+    flex: 1 1 120px;
+    display: flex;
+    gap: 5px;
+    margin-inline: 0.5rem;
+  }
+  .tr-progress span {
+    flex: 1;
+    height: 5px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+  }
+  .tr-progress i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--mint-300);
+  }
+  .tr-count {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+    color: #cfe3da;
+    min-width: 3.2em;
+  }
+  .tr-note {
+    font-size: 0.88rem;
+    margin: 1rem 0 0;
+    opacity: 0.85;
+  }
+</style>

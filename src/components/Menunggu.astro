@@ -1,0 +1,14 @@
+---
+/** Penanda data yang belum diberikan tim. Menyebut file yang harus diisi. */
+interface Props {
+  judul: string;
+  file?: string;
+}
+const { judul, file } = Astro.props;
+---
+
+<div class="menunggu" role="note">
+  <strong>{judul}</strong>
+  <slot />
+  {file && <span> Diisi di <code>{file}</code>.</span>}
+</div>

@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import Kepala from '../components/Kepala.astro';
+import { situs, tanggalIndonesia } from '../config/situs';
+const sah = situs.dokumen.privasiSah;
+---
+
+<Base judul="Kebijakan Privasi" deskripsi="Data apa yang dikumpulkan HyTrack, untuk apa, dan siapa yang dapat melihatnya.">
+  <Kepala
+    judul="Kebijakan Privasi"
+    eyebrow={sah ? 'Dokumen' : 'Draf · perlu dikonfirmasi'}
+    jejak={[{ label: 'Kebijakan Privasi' }]}
+    lead={`Terakhir diperbarui ${tanggalIndonesia(situs.dokumen.diperbarui)}.`}
+  />
+
+  <section class="section-tight">
+    <div class="narrow prose">
+      {
+        !sah && (
+          <div class="draf-banner" role="note">
+            <strong>Draf.</strong> Bagian bertanda <span class="konfirmasi">Perlu dikonfirmasi</span> belum diputuskan tim dan harus
+            ditinjau sebelum kebijakan ini berlaku. Bagian lain ditulis berdasarkan cara kerja aplikasi saat ini.
+          </div>
+        )
+      }
+
+      <h2>Siapa yang mengelola data</h2>
+      <p>
+        Penyelenggara HyTrack dan fasilitas kesehatan yang memakainya. <span class="konfirmasi">Perlu dikonfirmasi</span> nama badan
+        penyelenggara, alamat, dan kontak pelindungan data.
+      </p>
+
+      <h2>Data yang dikumpulkan aplikasi</h2>
+      <ul>
+        <li><strong>Akun pasien:</strong> nama lengkap, nomor HP, dan kata sandi (disimpan dalam bentuk hash).</li>
+        <li><strong>Kunjungan:</strong> poli, dokter, tanggal, nomor antrean, waktu check-in, dan tahap pelayanan.</li>
+        <li><strong>Pelayanan:</strong> catatan pemeriksaan dan resep yang diisi dokter, status farmasi, dan file hasil penunjang.</li>
+        <li><strong>Pendamping:</strong> tautan pendamping, yang disimpan hanya sebagai sidik (hash).</li>
+        <li><strong>Notifikasi:</strong> pemberitahuan di dalam aplikasi tentang kunjunganmu.</li>
+      </ul>
+
+      <h2>Untuk apa data dipakai</h2>
+      <ul>
+        <li>Menerbitkan nomor antrean, menghitung perkiraan tunggu, dan menampilkan tahap kunjungan.</li>
+        <li>Memungkinkan petugas melayani dan meneruskan pasien ke laboratorium atau farmasi.</li>
+        <li>Menyusun ringkasan layanan agregat untuk manajemen, tanpa identitas pasien.</li>
+      </ul>
+
+      <h2>Siapa yang dapat melihat</h2>
+      <ul>
+        <li>Kamu sendiri, untuk kunjunganmu.</li>
+        <li>Petugas sesuai perannya. Catatan dokter dan resep hanya untuk dokter dan farmasi yang menangani.</li>
+        <li>Pendamping yang kamu beri tautan: hanya nama singkat, nomor antrean, dan tahap kunjungan.</li>
+      </ul>
+
+      <h2>Layanan pihak ketiga</h2>
+      <ul>
+        <li><strong>WhatsApp (melalui penyedia Wangsaf):</strong> mengirim kode verifikasi ke nomor HP saat pendaftaran.</li>
+        <li><strong>Google Gemini:</strong> menyusun jawaban Hya dari fakta antrean tanpa identitas pasien.</li>
+        <li><strong>Penyedia hosting dan basis data</strong> tempat aplikasi berjalan. <span class="konfirmasi">Perlu dikonfirmasi</span> nama penyedia dan lokasi server.</li>
+      </ul>
+
+      <h2>Berapa lama data disimpan</h2>
+      <p><span class="konfirmasi">Perlu dikonfirmasi</span> masa simpan data akun, kunjungan, catatan medis, dan file hasil penunjang.</p>
+
+      <h2>Hak kamu</h2>
+      <p>
+        Kamu dapat meminta akses, perbaikan, atau penghapusan data pribadimu. <span class="konfirmasi">Perlu dikonfirmasi</span>
+        prosedur dan waktu tanggapan permintaan, serta dasar hukum pemrosesan menurut UU Pelindungan Data Pribadi.
+      </p>
+
+      <h2>Situs informasi ini</h2>
+      <p>
+        Situs ini tidak memiliki formulir, tidak meminta login, dan tidak memakai cookie pelacak. Tombol di situs ini membawamu ke
+        aplikasi HyTrack, yang tunduk pada kebijakan di atas.
+      </p>
+
+      <p><a class="link-arrow" href="/keamanan-data">Lihat Keamanan Data</a></p>
+    </div>
+  </section>
+</Base>

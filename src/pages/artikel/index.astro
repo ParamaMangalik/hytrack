@@ -1,0 +1,88 @@
+---
+import Base from '../../layouts/Base.astro';
+import Kepala from '../../components/Kepala.astro';
+import { artikel, tanggalArtikel } from '../../data/artikel';
+---
+
+<Base judul="Artikel & Panduan" deskripsi="Artikel dan panduan singkat memakai HyTrack untuk pasien, keluarga, dan petugas.">
+  <Kepala
+    judul="Artikel & Panduan"
+    eyebrow="Belajar HyTrack"
+    jejak={[{ label: 'Artikel & Panduan' }]}
+    lead="Tulisan singkat untuk menjawab pertanyaan sehari-hari saat berobat dan bertugas."
+  >
+    <p class="ke-panduan">Mencari langkah demi langkah? <a href="/panduan">Buka Panduan</a></p>
+  </Kepala>
+
+  <section class="section-tight">
+    <div class="wrap">
+      <ul class="daftar">
+        {
+          artikel.map((a) => (
+            <li>
+              <a class="card art" href={`/artikel/${a.slug}`}>
+                <span class="chip">{a.kategori}</span>
+                <h2>{a.judul}</h2>
+                <p>{a.ringkas}</p>
+                <span class="meta">
+                  {tanggalArtikel(a.terbit)} · {a.menitBaca} menit baca
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ke-panduan {
+    margin: 1rem 0 0;
+  }
+  .daftar {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 720px) {
+    .daftar {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .daftar {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .art {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    height: 100%;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .art:hover {
+    border-color: var(--teal-600);
+    color: var(--ink);
+  }
+  .art .chip {
+    justify-self: start;
+  }
+  .art h2 {
+    font-size: 1.25rem;
+    margin: 0.4rem 0 0;
+  }
+  .art p {
+    color: var(--muted);
+    margin: 0;
+  }
+  .meta {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+</style>

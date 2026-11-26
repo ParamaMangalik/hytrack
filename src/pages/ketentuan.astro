@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import Kepala from '../components/Kepala.astro';
+import { situs, tanggalIndonesia } from '../config/situs';
+const sah = situs.dokumen.ketentuanSah;
+---
+
+<Base judul="Ketentuan Penggunaan" deskripsi="Ketentuan penggunaan HyTrack.">
+  <Kepala
+    judul="Ketentuan Penggunaan"
+    eyebrow={sah ? 'Dokumen' : 'Draf · belum berlaku'}
+    jejak={[{ label: 'Ketentuan Penggunaan' }]}
+    lead={`Terakhir diperbarui ${tanggalIndonesia(situs.dokumen.diperbarui)}.`}
+  />
+
+  <section class="section-tight">
+    <div class="narrow prose">
+      {
+        !sah && (
+          <div class="draf-banner" role="note">
+            <strong>DRAF — belum disahkan dan belum berlaku.</strong> Teks ini adalah rancangan awal untuk ditinjau tim dan penasihat
+            hukum. Isi, nama pihak penyelenggara, dan tanggal berlaku dapat berubah.
+          </div>
+        )
+      }
+
+      <h2>1. Tentang layanan</h2>
+      <p>
+        HyTrack membantu pasien rawat jalan mengambil nomor antrean, melihat perkiraan waktu tunggu, dan mengikuti tahap
+        kunjungan. HyTrack bukan layanan gawat darurat. Dalam keadaan darurat, segera ke IGD terdekat atau hubungi 119.
+      </p>
+
+      <h2>2. Akun</h2>
+      <ul>
+        <li>Gunakan nama sesuai identitas dan nomor HP milikmu sendiri.</li>
+        <li>Jaga kerahasiaan kata sandi. Kamu bertanggung jawab atas aktivitas di akunmu.</li>
+        <li>Akun petugas dan manajemen dibuat oleh pengelola dan hanya untuk keperluan pelayanan.</li>
+      </ul>
+
+      <h2>3. Perkiraan waktu dan informasi</h2>
+      <p>
+        Perkiraan waktu tunggu, jam berangkat, dan status pelayanan adalah perkiraan yang dapat berubah. Keputusan medis dan urutan
+        pelayanan tetap ditentukan tenaga kesehatan dan fasilitas kesehatan.
+      </p>
+
+      <h2>4. Hya</h2>
+      <p>Hya adalah asisten chat untuk pertanyaan seputar antrean. Hya tidak memberi diagnosis atau saran medis.</p>
+
+      <h2>5. Larangan</h2>
+      <ul>
+        <li>Mengambil antrean atas nama orang lain tanpa izin.</li>
+        <li>Membagikan QR check-in atau tautan pendamping kepada pihak yang tidak berhak.</li>
+        <li>Mencoba mengakses data pasien lain atau mengganggu sistem.</li>
+      </ul>
+
+      <h2>6. Perubahan ketentuan</h2>
+      <p>Ketentuan dapat diperbarui. Tanggal pembaruan terakhir ditulis di bagian atas halaman ini.</p>
+
+      <h2>7. Kontak</h2>
+      <p>Pertanyaan tentang ketentuan ini dapat disampaikan lewat <a href="/bantuan">Kontak & Bantuan</a>.</p>
+    </div>
+  </section>
+</Base>

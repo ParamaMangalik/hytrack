@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import Kepala from '../components/Kepala.astro';
+import Kontak from '../components/Kontak.astro';
+---
+
+<Base judul="Bergabung dengan Tim" deskripsi="Peluang ikut membangun HyTrack.">
+  <Kepala
+    judul="Bergabung dengan tim HyTrack"
+    eyebrow="Karier"
+    jejak={[{ label: 'Bergabung dengan Tim' }]}
+    lead="Kami membangun alat yang membuat berobat rawat jalan lebih bisa diperkirakan."
+  />
+
+  <section class="section-tight">
+    <div class="narrow prose">
+      <h2>Lowongan saat ini</h2>
+      <div class="kosong card">
+        <strong>Belum ada lowongan terbuka.</strong>
+        <p>Halaman ini akan diperbarui bila tim membuka posisi baru.</p>
+      </div>
+
+      <h2>Bidang yang kami kerjakan</h2>
+      <ul>
+        <li>Pengembangan web (Laravel, React) dan aplikasi Android.</li>
+        <li>Desain antarmuka untuk pasien lanjut usia dan petugas yang sibuk.</li>
+        <li>Integrasi dengan sistem rumah sakit (SIMRS) dan notifikasi.</li>
+        <li>Riset lapangan di poliklinik, laboratorium, dan farmasi.</li>
+      </ul>
+
+      <h2>Ingin berkenalan?</h2>
+      <Kontak email="emailKarier" keperluan="karier" />
+      <p class="mt">Kenali tim kami di <a href="/tentang">Tentang HyTrack</a>.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .kosong p {
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+  }
+  .mt {
+    margin-top: 1.25rem;
+  }
+</style>
