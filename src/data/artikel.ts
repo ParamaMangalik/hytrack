@@ -106,10 +106,9 @@ export const artikel: Artikel[] = [
     menitBaca: 3,
     terbit: '2026-11-26',
     isi: [
-      { p: 'Panduan singkat untuk petugas yang baru mendapat akun HyTrack.' },
+      { p: 'Panduan singkat untuk petugas yang baru memakai HyTrack di meja check-in.' },
       { h: 'Sebelum layanan dimulai' },
       { ul: [
-        'Masuk lewat halaman Masuk Petugas dengan akun yang diberikan pengelola.',
         'Buka menu Scan QR kedatangan dan izinkan kamera saat browser meminta.',
         'Pastikan alamat situs diawali https://, karena kamera tidak bisa dipakai tanpa HTTPS.',
       ] },

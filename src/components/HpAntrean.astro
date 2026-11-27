@@ -1,251 +1,357 @@
 ---
 /**
- * Layar antrean di dalam bingkai HP, dibangun dengan HTML (bukan screenshot)
- * mengikuti tampilan tiket aplikasi. Angka adalah contoh dari skenario demo README.
+ * Layar "Pantau antrean" di bingkai HP, disalin dari mockup Emergent (LiveQueuePhone).
+ * Angka adalah data contoh, tidak terhubung ke sistem rumah sakit.
+ * Nomor yang dilayani berganti setiap 4 detik; berhenti saat kursor/fokus berada di HP,
+ * saat HP tidak terlihat, atau bila pengguna memilih "kurangi gerakan".
  */
+const SERVING = ['A-024', 'A-025', 'A-026'];
+const WAITS = ['15–25', '10–15', '5–10'];
 ---
 
-<div class="hp" role="img" aria-label="Contoh layar antrean HyTrack: nomor antreanmu A-027, sedang dilayani A-024, 3 pasien di depan, perkiraan tunggu 15 sampai 25 menit.">
-  <div class="hp-frame" aria-hidden="true">
-    <div class="hp-notch"></div>
-    <div class="hp-screen">
-      <div class="hp-top">
-        <span class="dot"></span> Terhubung <span class="muted">· diperbarui 08.41</span>
-      </div>
-      <p class="hp-label">Nomor antrean Anda</p>
-      <p class="hp-num">A-027</p>
-      <p class="hp-meta">Penyakit Dalam · dr. Rina Kusuma, Sp.PD</p>
-
-      <div class="hp-serving">
-        <div>
-          <p class="hp-label light">Sedang dilayani</p>
-          <p class="hp-serving-num">A-024</p>
+<div class="lq" data-lq data-serving={JSON.stringify(SERVING)} data-waits={JSON.stringify(WAITS)}>
+  <div class="lq-frame" role="group" aria-label="Contoh layar pantau antrean HyTrack dengan data contoh">
+    <div class="lq-screen">
+      <div class="lq-notch" aria-hidden="true"></div>
+      <div class="lq-body">
+        <p class="lq-note">Data contoh · Tidak terhubung ke sistem rumah sakit</p>
+        <p class="lq-title">Pantau antrean</p>
+        <p class="lq-clinic">Penyakit Dalam · dr. Rina Kusuma, Sp.PD</p>
+        <div class="lq-status">
+          <span class="lq-live"><span class="lq-ping" aria-hidden="true"><span></span><span></span></span>Terhubung</span>
+          <span>Diperbarui 08.42</span>
         </div>
-        <div class="hp-pulse" aria-hidden="true"></div>
-      </div>
 
-      <div class="hp-stats">
-        <div>
-          <strong>3 pasien</strong>
-          <span>di depan Anda</span>
+        <div class="lq-card">
+          <p class="lq-label">NOMOR ANTREAN ANDA</p>
+          <p class="lq-num">A-027</p>
+          <div class="lq-serving">
+            <span class="sr-only" aria-live="polite" aria-atomic="true" data-lq-announce>Sedang dilayani A-024. 3 pasien di depan Anda.</span>
+            <div aria-hidden="true" class="lq-serving-row">
+              <span>Sedang dilayani</span>
+              <span class="lq-roll"><span data-lq-serving>A-024</span></span>
+            </div>
+          </div>
+          <div class="lq-stats" aria-hidden="true">
+            <div><p class="lq-big" data-lq-ahead>3</p><p class="lq-small">di depan Anda</p></div>
+            <div><p class="lq-big"><span data-lq-wait>15–25</span><span class="lq-unit"> mnt</span></p><p class="lq-small">Perkiraan tunggu</p></div>
+          </div>
+          <div class="lq-bar" aria-hidden="true"><span data-lq-bar style="width:25%"></span></div>
         </div>
-        <div>
-          <strong>15–25 mnt</strong>
-          <span>perkiraan tunggu</span>
+
+        <div class="lq-actions" aria-hidden="true">
+          <div class="lq-act primary">Tampilkan QR check-in</div>
+          <div class="lq-act-row">
+            <div class="lq-act">Bagikan ke pendamping</div>
+            <div class="lq-act">Tanya Hya</div>
+          </div>
         </div>
       </div>
-
-      <div class="hp-bar"><span style="width:62%"></span></div>
-
-      <p class="hp-label">Tahap kunjungan</p>
-      <ol class="hp-journey">
-        <li class="done">Check-in kedatangan</li>
-        <li class="now">Pemeriksaan dokter</li>
-        <li>Laboratorium</li>
-        <li>Farmasi</li>
-      </ol>
-
-      <div class="hp-go">
-        <strong>Sudah check-in · 08.30</strong>
-        <span>Tetap di sekitar ruang tunggu poli.</span>
+      <div class="lq-tabs" aria-hidden="true">
+        <span><i></i>Beranda</span>
+        <span class="on"><i></i>Kunjungan</span>
+        <span><i></i>Akun</span>
       </div>
     </div>
   </div>
-  <p class="hp-caption">Contoh tampilan · data ilustrasi</p>
 </div>
 
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-lq]').forEach((hp) => {
+    const serving: string[] = JSON.parse(hp.dataset.serving || '[]');
+    const waits: string[] = JSON.parse(hp.dataset.waits || '[]');
+    const elServing = hp.querySelector<HTMLElement>('[data-lq-serving]')!;
+    const elAhead = hp.querySelector<HTMLElement>('[data-lq-ahead]')!;
+    const elWait = hp.querySelector<HTMLElement>('[data-lq-wait]')!;
+    const elBar = hp.querySelector<HTMLElement>('[data-lq-bar]')!;
+    const elAnnounce = hp.querySelector<HTMLElement>('[data-lq-announce]')!;
+    let idx = 0;
+    let tahan = false;
+    let terlihat = true;
+    const tampilkan = () => {
+      const ahead = 3 - idx;
+      elServing.classList.remove('masuk');
+      void elServing.offsetWidth;
+      elServing.textContent = serving[idx];
+      elServing.classList.add('masuk');
+      elAhead.textContent = String(ahead);
+      elWait.textContent = waits[idx];
+      elBar.style.width = `${((idx + 1) / 4) * 100}%`;
+      elAnnounce.textContent = `Sedang dilayani ${serving[idx]}. ${ahead} pasien di depan Anda.`;
+    };
+    if (reduce) return;
+    hp.addEventListener('pointerenter', () => (tahan = true));
+    hp.addEventListener('pointerleave', () => (tahan = false));
+    hp.addEventListener('focusin', () => (tahan = true));
+    hp.addEventListener('focusout', () => (tahan = false));
+    new IntersectionObserver(([e]) => (terlihat = e.isIntersecting)).observe(hp);
+    window.setInterval(() => {
+      if (tahan || !terlihat || document.hidden) return;
+      idx = (idx + 1) % serving.length;
+      tampilkan();
+    }, 4000);
+  });
+</script>
+
 <style>
-  .hp {
-    display: grid;
-    justify-items: center;
-    gap: 0.75rem;
+  .lq {
+    display: flex;
+    justify-content: center;
   }
-  .hp-frame {
-    position: relative;
-    width: min(320px, 82vw);
-    aspect-ratio: 9 / 18.6;
-    background: #0d1f1d;
+  .lq-frame {
+    width: 272px;
     border-radius: 46px;
-    padding: 12px;
+    background: #0d1714;
+    padding: 9px;
     box-shadow:
-      0 0 0 2px #2a3d3a inset,
-      var(--shadow-lg);
+      0 40px 80px -30px rgba(11, 59, 55, 0.55),
+      inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
   }
-  .hp-notch {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 92px;
-    height: 24px;
-    border-radius: 14px;
-    background: #0d1f1d;
-    z-index: 2;
+  @media (min-width: 640px) {
+    .lq-frame {
+      width: 300px;
+    }
   }
-  .hp-screen {
-    height: 100%;
-    border-radius: 36px;
-    background: linear-gradient(180deg, #eaf4ee 0%, var(--cream) 40%);
-    padding: 56px 20px 20px;
-    display: flex;
-    flex-direction: column;
+  .lq-screen {
+    position: relative;
+    height: 560px;
     overflow: hidden;
-    color: var(--ink);
+    border-radius: 38px;
+    background: linear-gradient(to bottom, #eaf4ef, var(--screen), var(--cream));
+    color: var(--pine);
   }
-  .hp-top {
-    font-size: 0.72rem;
-    font-weight: 650;
-    color: var(--teal-700);
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-bottom: 1rem;
+  @media (min-width: 640px) {
+    .lq-screen {
+      height: 610px;
+    }
   }
-  .hp-top .muted {
-    color: var(--muted);
-    font-weight: 500;
+  .lq-notch {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    z-index: 2;
+    width: 86px;
+    height: 22px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: #0d1714;
   }
-  .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--teal-600);
-    box-shadow: 0 0 0 3px rgba(24, 135, 119, 0.2);
+  .lq-body {
+    padding: 44px 16px 96px;
   }
-  .hp-label {
-    font-size: 0.66rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--muted);
+  .lq-body p {
     margin: 0;
   }
-  .hp-label.light {
-    color: var(--mint-300);
+  .lq-note {
+    font-size: 12px;
+    color: var(--ink-soft);
   }
-  .hp-num {
-    font-size: 3.6rem;
-    font-weight: 800;
+  .lq-title {
+    margin-top: 12px !important;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .lq-clinic {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+  .lq-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .lq-live {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: var(--teal);
+  }
+  .lq-ping {
+    position: relative;
+    display: flex;
+    width: 8px;
+    height: 8px;
+  }
+  .lq-ping span {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: var(--teal);
+  }
+  .lq-ping span:first-child {
+    background: rgba(8, 111, 101, 0.6);
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .lq-card {
+    margin-top: 12px;
+    border-radius: 24px;
+    background: #fff;
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  .lq-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  .lq-num {
+    margin-top: 4px !important;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
     letter-spacing: -0.04em;
-    line-height: 1.05;
-    color: var(--teal-900);
-    margin: 0.1rem 0 0.2rem;
   }
-  .hp-meta {
-    font-size: 0.76rem;
-    color: var(--muted);
-    margin: 0 0 1rem;
+  .lq-serving {
+    margin-top: 16px;
+    border-radius: 16px;
+    background: var(--mint);
+    padding: 10px 12px;
   }
-  .hp-serving {
-    background: var(--teal-700);
-    background-image: linear-gradient(129deg, #086b62 0%, #188777 71.4%);
-    color: #fff;
-    border-radius: 18px;
-    padding: 0.85rem 1rem;
+  .lq-serving-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.8rem;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
   }
-  .hp-serving-num {
-    font-size: 1.9rem;
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.1;
-    color: #fff;
+  .lq-roll {
+    position: relative;
+    height: 24px;
+    width: 64px;
+    overflow: hidden;
+    text-align: right;
   }
-  .hp-pulse {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--mint-300);
-    box-shadow: 0 0 0 6px rgba(169, 220, 207, 0.25);
+  .lq-roll span {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--teal);
   }
-  .hp-stats {
+  .lq-roll span.masuk {
+    animation: lq-masuk 0.5s var(--ease);
+  }
+  @keyframes lq-masuk {
+    from {
+      transform: translateY(22px);
+      opacity: 0;
+    }
+  }
+  .lq-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.6rem;
-    margin-bottom: 0.9rem;
+    gap: 8px;
+    margin-top: 12px;
   }
-  .hp-stats div {
-    background: #fff;
-    border: 1px solid var(--card-line);
-    border-radius: 14px;
-    padding: 0.6rem 0.7rem;
-    display: grid;
+  .lq-stats > div {
+    border: 1px solid rgba(11, 59, 55, 0.1);
+    border-radius: 16px;
+    padding: 8px 12px;
   }
-  .hp-stats strong {
-    font-size: 0.98rem;
-    color: var(--teal-900);
+  .lq-big {
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: nowrap;
   }
-  .hp-stats span {
-    font-size: 0.68rem;
-    color: var(--muted);
+  .lq-unit {
+    font-size: 12px;
+    font-weight: 600;
   }
-  .hp-bar {
+  .lq-small {
+    font-size: 12px;
+    line-height: 1.25;
+    color: var(--ink-soft);
+  }
+  .lq-bar {
+    margin-top: 12px;
     height: 8px;
-    border-radius: 99px;
-    background: var(--mint-100);
     overflow: hidden;
-    margin-bottom: 0.9rem;
+    border-radius: 999px;
+    background: var(--mint);
   }
-  .hp-bar span {
+  .lq-bar span {
     display: block;
     height: 100%;
-    background: var(--teal-600);
-    border-radius: inherit;
+    border-radius: 999px;
+    background: var(--teal);
+    transition: width 0.8s var(--ease);
   }
-  .hp-journey {
-    list-style: none;
-    margin: 0.5rem 0 0.9rem;
-    padding: 0;
+  .lq-actions {
     display: grid;
-    gap: 0.45rem;
-    font-size: 0.76rem;
-    color: var(--muted);
+    gap: 8px;
+    margin-top: 12px;
   }
-  .hp-journey li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .hp-journey li::before {
-    content: '';
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 2px solid var(--mint-200);
+  .lq-act {
+    border: 1px solid rgba(8, 111, 101, 0.3);
+    border-radius: 999px;
     background: #fff;
-    flex: none;
+    padding: 8px 0;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--teal);
   }
-  .hp-journey .done::before {
-    background: var(--teal-600);
-    border-color: var(--teal-600);
+  .lq-act.primary {
+    border: 0;
+    background: var(--teal);
+    padding: 10px 0;
+    font-size: 13px;
+    color: #fff;
   }
-  .hp-journey .now {
-    color: var(--teal-900);
-    font-weight: 700;
-  }
-  .hp-journey .now::before {
-    border-color: var(--teal-700);
-    box-shadow: 0 0 0 3px rgba(8, 111, 101, 0.18);
-  }
-  .hp-go {
-    margin-top: auto;
-    background: var(--mint-100);
-    border-radius: 14px;
-    padding: 0.7rem 0.85rem;
+  .lq-act-row {
     display: grid;
-    font-size: 0.72rem;
-    color: var(--muted);
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
-  .hp-go strong {
-    color: var(--teal-800);
-    font-size: 0.82rem;
+  .lq-tabs {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid rgba(11, 59, 55, 0.05);
+    border-radius: 26px 26px 0 0;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 8px 8px 12px;
   }
-  .hp-caption {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin: 0;
+  .lq-tabs span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .lq-tabs i {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 24px;
+    border-radius: 999px;
+  }
+  .lq-tabs i::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    border: 2px solid rgba(58, 86, 82, 0.7);
+  }
+  .lq-tabs .on {
+    color: var(--teal);
+  }
+  .lq-tabs .on i {
+    background: var(--mint);
+  }
+  .lq-tabs .on i::after {
+    border-color: var(--teal);
   }
 </style>

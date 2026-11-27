@@ -1,9 +1,8 @@
-import { situs } from '../config/situs';
 
 export type Tautan = { label: string; href: string; tombol?: boolean; eksternal?: boolean };
 export type KolomFooter = { judul: string; tautan: Tautan[] };
 
-/** Footer 4 kolom, 24 entri. Setiap href harus punya halaman. */
+/** Footer 4 kolom, 22 entri. Setiap href harus punya halaman. */
 export const footer: KolomFooter[] = [
   {
     judul: 'Produk',
@@ -26,7 +25,6 @@ export const footer: KolomFooter[] = [
       { label: 'Dokter & Poliklinik', href: '/untuk/poliklinik' },
       { label: 'Petugas Farmasi', href: '/untuk/farmasi' },
       { label: 'Laboratorium', href: '/untuk/laboratorium' },
-      { label: 'Pembayaran & Kasir', href: '/untuk/kasir' },
     ],
   },
   {
@@ -46,7 +44,6 @@ export const footer: KolomFooter[] = [
     judul: 'Hubungi Kami',
     tautan: [
       { label: 'Kontak & Bantuan', href: '/bantuan' },
-      { label: 'Masuk Petugas →', href: situs.aplikasi.masukPetugas, tombol: true, eksternal: true },
     ],
   },
 ];

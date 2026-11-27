@@ -13,11 +13,10 @@ export const situs = {
   nama: 'HyTrack',
   slogan: 'Teman Perjalanan Berobat',
 
-  /** Aplikasi yang sudah berjalan (pasien & petugas). */
+  /** Aplikasi yang sudah berjalan (pasien). */
   aplikasi: {
     web: 'https://hytrack-psas.vercel.app/',
     masukPasien: 'https://hytrack-psas.vercel.app/masuk',
-    masukPetugas: 'https://hytrack-psas.vercel.app/masuk/internal',
     bantuan: 'https://hytrack-psas.vercel.app/bantuan',
   },
 

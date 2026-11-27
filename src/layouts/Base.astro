@@ -1,10 +1,7 @@
 ---
 import '@fontsource-variable/inter';
 import '../styles/global.css';
-import { Image } from 'astro:assets';
-import logo from '../assets/logo-hytrack.png';
 import Ikon from '../components/Ikon.astro';
-import TombolUnduh from '../components/TombolUnduh.astro';
 import { situs } from '../config/situs';
 import { footer, menuUtama } from '../data/navigasi';
 
@@ -38,6 +35,7 @@ const tahun = new Date().getFullYear();
     <meta property="og:locale" content="id_ID" />
     <meta property="og:url" content={kanonik} />
     <meta property="og:image" content={new URL('/assets/og-hytrack.png', Astro.site).href} />
+    <link rel="preload" as="image" href="/brand/logo-hytrack.webp" type="image/webp" />
     <script is:inline>
       // Deteksi perangkat untuk mengurutkan tombol unduh. ?perangkat=android|ios|desktop untuk uji.
       (function () {
@@ -48,63 +46,115 @@ const tahun = new Date().getFullYear();
         var ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         var p = q && /^(android|ios|desktop)$/.test(q) ? q : /Android/i.test(ua) ? 'android' : ios ? 'ios' : 'desktop';
         d.setAttribute('data-perangkat', p);
+        // Tirai pergantian halaman: bila halaman sebelumnya menutup tirai, buka tirai di sini.
+        try {
+          if (sessionStorage.getItem('hytrack-tirai') === '1') {
+            sessionStorage.removeItem('hytrack-tirai');
+            if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('tirai-masuk');
+          }
+        } catch (e) {}
       })();
     </script>
   </head>
   <body>
     <a class="skip" href="#isi">Lompat ke isi</a>
+    <div class="kemajuan" aria-hidden="true"></div>
+    <div class="tirai" aria-hidden="true">
+      <picture>
+        <source srcset="/brand/logo-hytrack.webp" type="image/webp" />
+        <img src="/brand/logo-hytrack.png" alt="" width="72" height="52" />
+      </picture>
+    </div>
+
     <header class="site-header">
-      <div class="wrap bar">
-        <a class="brand" href="/" aria-label="HyTrack, ke beranda">
-          <Image src={logo} alt="" width={92} loading="eager" />
-          <span>
-            <span class="brand-name">HyTrack</span>
-            <span class="brand-tag">{situs.slogan}</span>
-          </span>
-        </a>
-        <nav class="nav" id="menu-utama" aria-label="Menu utama">
-          {
-            menuUtama.map((m) => (
-              <a href={m.href} aria-current={aktif(m.href) ? 'page' : undefined}>
-                {m.label}
-              </a>
-            ))
-          }
-          <a class="btn btn-primary nav-web" href={situs.aplikasi.web}>Buka HyTrack Web</a>
-        </nav>
-        <a class="btn btn-secondary btn-sm header-cta" href={situs.aplikasi.web}>Buka HyTrack Web</a>
-        <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-utama">
-          <Ikon nama="menu" ukuran={20} />
-          <span>Menu</span>
-        </button>
-      </div>
-    </header>
-
-    <main id="isi">
-      <slot />
-    </main>
-
-    <footer class="site-footer on-dark">
-      <div class="wrap">
-        <div class="footer-brand">
+      <div class="nav-pill on-dark">
+        <div class="nav-bar">
           <a class="brand" href="/" aria-label="HyTrack, ke beranda">
-            <Image src={logo} alt="" width={92} />
-            <span>
+            <picture>
+              <source srcset="/brand/logo-hytrack.webp" type="image/webp" />
+              <img src="/brand/logo-hytrack.png" alt="" width="52" height="38" />
+            </picture>
+            <span class="brand-text">
               <span class="brand-name">HyTrack</span>
               <span class="brand-tag">{situs.slogan}</span>
             </span>
           </a>
-          <p>Ambil nomor antrean, tahu kapan berangkat, dan ikuti kunjungan rawat jalanmu dari HP.</p>
+
+          <nav aria-label="Menu utama">
+            <ul class="nav-links">
+              {
+                menuUtama.map((m) => (
+                  <li>
+                    <a href={m.href} aria-current={aktif(m.href) ? 'page' : undefined}>
+                      {m.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+
+          <div class="nav-aksi">
+            <a class="btn btn-white nav-web" href={situs.aplikasi.web} data-magnet>
+              Buka HyTrack Web <Ikon nama="luar" ukuran={16} />
+            </a>
+            <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-hp" aria-label="Buka menu">
+              <Ikon nama="menu" ukuran={20} class="ikon-buka" />
+              <Ikon nama="tutup" ukuran={20} class="ikon-tutup" />
+            </button>
+          </div>
+        </div>
+
+        <div class="menu-hp" id="menu-hp">
+          <div>
+            <nav aria-label="Menu utama (HP)">
+              <ul>
+                {
+                  menuUtama.map((m) => (
+                    <li>
+                      <a href={m.href} aria-current={aktif(m.href) ? 'page' : undefined} tabindex="-1">
+                        {m.label}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+              <a class="btn btn-white" href={situs.aplikasi.web} tabindex="-1">Buka HyTrack Web <Ikon nama="luar" ukuran={16} /></a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="isi" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="site-footer on-dark">
+      <div class="rings footer-rings" aria-hidden="true"></div>
+      <div class="wrap footer-inner">
+        <div class="footer-brand" data-reveal>
+          <a class="brand" href="/" aria-label="HyTrack, ke beranda">
+            <picture>
+              <source srcset="/brand/logo-hytrack.webp" type="image/webp" />
+              <img src="/brand/logo-hytrack.png" alt="" width="52" height="38" loading="lazy" />
+            </picture>
+            <span class="brand-text">
+              <span class="brand-name">HyTrack</span>
+              <span class="brand-tag">{situs.slogan}</span>
+            </span>
+          </a>
+          <p>Aplikasi antrean rawat jalan untuk pasien dan petugas rumah sakit.</p>
         </div>
 
         <div class="footer-cols">
           {
             footer.map((kolom, i) => (
-              <section class="footer-col" aria-labelledby={`fk-${i}`}>
+              <section class="footer-col" aria-labelledby={`fk-${i}`} data-reveal>
                 <h2 id={`fk-${i}`}>
                   <button class="footer-toggle" type="button" aria-expanded="true" aria-controls={`fl-${i}`}>
                     <span>{kolom.judul}</span>
-                    <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
                       <path d="m6 9 6 6 6-6" />
                     </svg>
                   </button>
@@ -112,16 +162,19 @@ const tahun = new Date().getFullYear();
                 <ul id={`fl-${i}`}>
                   {kolom.tautan.map((t) => (
                     <li>
-                      <a href={t.href} class={t.tombol ? 'footer-outline' : undefined}>
-                        {t.label}
-                      </a>
+                      <a href={t.href}>{t.label}</a>
                     </li>
                   ))}
                 </ul>
+                {i === footer.length - 1 && !situs.kontak.email && !situs.kontak.whatsapp && (
+                  <p class="footer-kontak">Kontak resmi segera diumumkan</p>
+                )}
               </section>
             ))
           }
         </div>
+
+        <p class="footer-wordmark" aria-hidden="true" data-wordmark>HyTrack</p>
 
         <div class="footer-bottom">
           <span>© {tahun} HyTrack</span>
@@ -142,32 +195,27 @@ const tahun = new Date().getFullYear();
               </ul>
             )
           }
-          {
-            situs.toko.googlePlay && (
-              <a href={situs.toko.googlePlay} rel="noopener">
-                Google Play
-              </a>
-            )
-          }
-          <span class="spacer"></span>
-          <TombolUnduh hanya="apk" ukuran="sm" gelap />
         </div>
       </div>
     </footer>
 
     <script>
+      import '../scripts/gerak';
+
       // Menu HP
       const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
-      const nav = document.getElementById('menu-utama');
-      btn?.addEventListener('click', () => {
-        const buka = btn.getAttribute('aria-expanded') !== 'true';
-        btn.setAttribute('aria-expanded', String(buka));
-        nav?.classList.toggle('open', buka);
-      });
+      const menu = document.getElementById('menu-hp');
+      const tautanMenu = [...(menu?.querySelectorAll<HTMLAnchorElement>('a') ?? [])];
+      const setMenu = (buka: boolean) => {
+        btn?.setAttribute('aria-expanded', String(buka));
+        btn?.setAttribute('aria-label', buka ? 'Tutup menu' : 'Buka menu');
+        menu?.classList.toggle('buka', buka);
+        tautanMenu.forEach((a) => (buka ? a.removeAttribute('tabindex') : a.setAttribute('tabindex', '-1')));
+      };
+      btn?.addEventListener('click', () => setMenu(btn.getAttribute('aria-expanded') !== 'true'));
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && nav?.classList.contains('open')) {
-          nav.classList.remove('open');
-          btn?.setAttribute('aria-expanded', 'false');
+        if (e.key === 'Escape' && menu?.classList.contains('buka')) {
+          setMenu(false);
           btn?.focus();
         }
       });

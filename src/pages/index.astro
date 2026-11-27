@@ -6,34 +6,136 @@ import QrUnduh from '../components/QrUnduh.astro';
 import Trailer from '../components/Trailer.astro';
 import Ikon from '../components/Ikon.astro';
 import Faq from '../components/Faq.astro';
+import Status from '../components/Status.astro';
 import { apkTersedia, situs, tanggalIndonesia } from '../config/situs';
-import { manfaatUtama } from '../data/halaman';
+import { halamanFitur, manfaatUtama, urlHalaman } from '../data/halaman';
+
+const marquee = ['Antrean langsung', 'Berangkat di waktu yang pas', 'Check-in dengan QR', 'Alur pelayanan', 'Pelacakan obat', 'Pendamping keluarga'];
+const ikonFitur: Record<string, string> = {
+  'antrean-langsung': 'antrean',
+  'dashboard-petugas': 'petugas',
+  'poli-dan-dokter': 'dokter',
+  booking: 'tiket',
+  'waktu-berangkat': 'jam',
+  'alur-pelayanan': 'alur',
+  'pelacakan-obat': 'obat',
+};
 ---
 
 <Base judul="Beranda">
-  <!-- Pembuka -->
-  <section class="hero">
+  <!-- Pembuka: disalin dari hero Emergent -->
+  <section class="hero mesh grain" aria-labelledby="hero-title" data-miring>
     <div class="wrap hero-grid">
       <div class="hero-text">
-        <span class="chip"><Ikon nama="antrean" ukuran={16} /> Antrean rawat jalan</span>
-        <h1>Pantau antreanmu sebelum berangkat.</h1>
-        <p class="lead">Pilih poli dan dokter, ambil nomor antrean, lalu ikuti perkembangan kunjunganmu dari HP.</p>
-        <TombolUnduh />
-        <p class="cta-note">
-          {apkTersedia ? 'Aplikasi Android berupa file APK.' : 'APK Android segera tersedia.'} HyTrack Web bisa dipakai di semua
-          HP, termasuk iPhone.
-        </p>
+        <p class="eyebrow" data-reveal><span class="titik" aria-hidden="true"></span>Antrean rawat jalan</p>
+        <h1 id="hero-title" data-mask>
+          <span class="baris">Pantau antreanmu</span>
+          <span class="baris">sebelum berangkat.</span>
+        </h1>
+        <div data-reveal>
+          <p class="hero-sub">Pilih poli dan dokter, ambil nomor antrean, lalu ikuti perkembangan kunjunganmu dari HP.</p>
+          <TombolUnduh />
+          <p class="cta-note">
+            {apkTersedia ? 'Aplikasi Android berupa file APK.' : 'APK Android segera tersedia.'} HyTrack Web bisa dipakai di semua
+            HP, termasuk iPhone.
+          </p>
+        </div>
       </div>
-      <div class="hero-visual">
-        <HpAntrean />
+
+      <div class="hero-visual" data-angkat>
+        <div class="hero-hp" data-miring-target>
+          <HpAntrean />
+        </div>
+        <div class="float f1" aria-hidden="true"><span><Ikon nama="centang" ukuran={16} /> Check-in 08.30</span></div>
+        <div class="float f2" aria-hidden="true"><span><Ikon nama="obat" ukuran={16} /> Farmasi · Obat siap diambil</span></div>
+        <div class="float f3" aria-hidden="true"><span><Ikon nama="jam" ukuran={16} /> Berangkat sebelum 12.20</span></div>
       </div>
     </div>
   </section>
 
-  <!-- 1. Unduh -->
+  <!-- Marquee -->
+  <section class="marquee" aria-label={marquee.join(', ')}>
+    <div class="marquee-track" aria-hidden="true">
+      {
+        [...marquee, ...marquee].map((m) => (
+          <span class="marquee-item">
+            <span>{m}</span>
+            <span class="marquee-dot" />
+          </span>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Pernyataan yang menyala saat digulir + kartu bertumpuk -->
+  <section class="section manfaat-sec" aria-labelledby="manfaat-judul">
+    <div class="wrap">
+      <span class="eyebrow">Kenapa HyTrack</span>
+      <h2 id="manfaat-judul" class="sr-only">Lebih sedikit menunggu tanpa kepastian</h2>
+      <p class="pernyataan" data-nyala>
+        Lebih sedikit menunggu tanpa kepastian. HyTrack memberi tahu kapan berangkat, berapa pasien lagi di depanmu, dan ke
+        mana setelah diperiksa.
+      </p>
+
+      <ul class="tumpuk" data-tumpuk>
+        {
+          manfaatUtama.map((m, i) => (
+            <li class="tumpuk-item" data-tumpuk-kartu style={`--i:${i}`}>
+              <a class="tumpuk-kartu" href={m.href}>
+                <span class="tumpuk-no">0{i + 1}</span>
+                <span class="tumpuk-ikon">
+                  <Ikon nama={m.ikon} ukuran={30} />
+                </span>
+                <h3>{m.judul}</h3>
+                <p>{m.teks}</p>
+                <span class="link-arrow">Lihat fiturnya</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Fitur: gulir menyamping -->
+  <section class="fitur-sec bg-dark" aria-labelledby="fitur-judul" data-samping>
+    <div class="wrap fitur-head">
+      <div>
+        <span class="eyebrow">Fitur</span>
+        <h2 id="fitur-judul" class="judul-besar">Satu kunjungan, dari rumah sampai ambil obat</h2>
+      </div>
+      <a class="btn btn-ghost-light" href="/fitur">Semua fitur</a>
+    </div>
+    <div class="fitur-viewport">
+      <ul class="fitur-jalur" data-samping-jalur>
+        {
+          halamanFitur.map((h, i) => (
+            <li>
+              <a class="fitur-kartu" href={urlHalaman(h)}>
+                <span class="fitur-top">
+                  <span class="fitur-ikon">
+                    <Ikon nama={ikonFitur[h.slug] ?? 'info'} ukuran={26} />
+                  </span>
+                  <span class="fitur-no">{String(i + 1).padStart(2, '0')}</span>
+                </span>
+                <strong>{h.label}</strong>
+                <span class="fitur-q">{h.pertanyaan}</span>
+                <span class="fitur-bawah">
+                  <Status status={h.status} />
+                  <span class="fitur-panah" aria-hidden="true">→</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Unduh -->
   <section class="section-tight bg-mint" id="unduh" aria-labelledby="unduh-judul">
     <div class="wrap unduh-grid">
-      <div>
+      <div data-reveal>
         <span class="eyebrow">Unduh</span>
         <h2 id="unduh-judul">Pakai HyTrack dengan cara yang cocok untukmu</h2>
         <p class="lead">
@@ -79,7 +181,7 @@ import { manfaatUtama } from '../data/halaman';
         </dl>
         <a class="link-arrow" href="/panduan/memasang-android">Lihat cara memasang</a>
       </div>
-      <div class="qr-card card">
+      <div class="qr-card card" data-reveal>
         <p class="qr-head">Sedang di laptop?</p>
         <QrUnduh ukuran={176} />
         <p class="qr-foot">QR ini hanya membuka halaman unduhan. Bukan QR check-in.</p>
@@ -87,7 +189,7 @@ import { manfaatUtama } from '../data/halaman';
     </div>
   </section>
 
-  <!-- 2. Trailer -->
+  <!-- Trailer -->
   <section class="section bg-dark" id="trailer" aria-labelledby="trailer-judul">
     <div class="wrap">
       <div class="section-head">
@@ -95,103 +197,375 @@ import { manfaatUtama } from '../data/halaman';
         <h2 id="trailer-judul">Dari memilih poli sampai memantau giliran</h2>
         <p class="lead">Empat langkah yang kamu lalui di HyTrack sebelum tiba di ruang periksa.</p>
       </div>
-      <Trailer />
+      <div data-reveal><Trailer /></div>
     </div>
   </section>
 
-  <!-- 3. Tiga manfaat -->
-  <section class="section" aria-labelledby="manfaat-judul">
-    <div class="wrap">
-      <div class="section-head center">
-        <span class="eyebrow">Kenapa HyTrack</span>
-        <h2 id="manfaat-judul">Lebih sedikit menunggu tanpa kepastian</h2>
-      </div>
-      <ul class="manfaat grid grid-3">
-        {
-          manfaatUtama.map((m) => (
-            <li>
-              <a class="card manfaat-card" href={m.href}>
-                <span class="manfaat-ikon">
-                  <Ikon nama={m.ikon} ukuran={28} />
-                </span>
-                <h3>{m.judul}</h3>
-                <p>{m.teks}</p>
-                <span class="link-arrow">Lihat fiturnya</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
-  <!-- 4. Dua jalur -->
-  <section class="section-tight bg-cream" aria-labelledby="jalur-judul">
+  <!-- Dua jalur -->
+  <section class="section-tight" aria-labelledby="jalur-judul">
     <div class="wrap">
       <h2 id="jalur-judul" class="sr-only">Pilih jalurmu</h2>
       <div class="jalur grid grid-2">
-        <article class="jalur-card pasien">
+        <article class="jalur-card pasien" data-reveal>
           <Ikon nama="pasien" ukuran={36} />
           <h3>Saya ingin berobat</h3>
           <p>Daftar dengan nomor HP, ambil antrean, dan ketahui kapan harus berangkat.</p>
           <div class="jalur-cta">
-            <a class="btn btn-light" href={situs.aplikasi.web}>Buka HyTrack Web</a>
+            <a class="btn btn-white" href={situs.aplikasi.web} data-magnet>Buka HyTrack Web</a>
             <a class="btn btn-ghost-light" href="/panduan/antrean-pertama">Panduan antrean pertama</a>
           </div>
         </article>
-        <article class="jalur-card petugas">
+        <article class="jalur-card faskes" data-reveal>
           <Ikon nama="petugas" ukuran={36} />
-          <h3>Saya petugas</h3>
-          <p>Jalankan antrean poli, check-in pasien, dan teruskan ke laboratorium atau farmasi.</p>
+          <h3>Untuk rumah sakit & klinik</h3>
+          <p>Antrean per poli, check-in QR, dan alur ke laboratorium atau farmasi dalam satu dashboard.</p>
           <div class="jalur-cta">
-            <a class="btn btn-primary" href={situs.aplikasi.masukPetugas}>Masuk Petugas</a>
-            <a class="btn btn-secondary" href="/akses-petugas">Belum punya akses?</a>
+            <a class="btn btn-primary" href="/fitur/dashboard-petugas" data-magnet>Lihat Dashboard Petugas</a>
+            <a class="btn btn-secondary" href="/kerja-sama">Kerja sama</a>
           </div>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- 5. FAQ -->
-  <section class="section" id="faq" aria-labelledby="faq-judul">
+  <!-- FAQ -->
+  <section class="section bg-cream" id="faq" aria-labelledby="faq-judul">
     <div class="narrow">
       <div class="section-head center">
         <span class="eyebrow">Pertanyaan umum</span>
         <h2 id="faq-judul">Yang sering ditanyakan</h2>
       </div>
-      <Faq />
+      <div data-reveal><Faq /></div>
       <p class="faq-more">Masih bingung? <a href="/bantuan">Kontak & Bantuan</a></p>
     </div>
   </section>
 </Base>
 
 <style>
+  /* ---------- Hero (Emergent) ---------- */
   .hero {
-    position: relative;
     overflow: hidden;
-    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 6vw, 5rem);
-    background:
-      radial-gradient(700px 420px at 85% 30%, rgba(91, 189, 176, 0.28), transparent 65%),
-      radial-gradient(500px 300px at 0% 100%, rgba(225, 239, 231, 0.9), transparent 70%),
-      var(--warm);
+    margin-top: -88px;
+    padding: 150px 0 5rem;
+  }
+  @media (min-width: 1024px) {
+    .hero {
+      padding: 180px 0 8rem;
+    }
   }
   .hero-grid {
     display: grid;
-    gap: 3rem;
+    gap: 4rem;
     align-items: center;
   }
-  @media (min-width: 900px) {
+  @media (min-width: 1024px) {
     .hero-grid {
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 2.5rem;
     }
   }
+  .hero-text {
+    max-width: 680px;
+  }
+  .titik {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+  }
   .hero h1 {
-    margin-top: 1rem;
-    max-width: 14ch;
+    margin-top: 0.5rem;
   }
-  .hero .lead {
-    margin-bottom: 2rem;
+  .hero h1 :global(.baris) {
+    display: block;
   }
+  .hero-sub {
+    margin: 1.5rem 0 2.5rem;
+    max-width: 560px;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+  @media (min-width: 1024px) {
+    .hero-sub {
+      font-size: 19px;
+    }
+  }
+  .hero-visual {
+    position: relative;
+    margin-inline: auto;
+    perspective: 1400px;
+  }
+  .hero-hp {
+    position: relative;
+    transform-style: preserve-3d;
+  }
+  .float {
+    position: absolute;
+    z-index: 2;
+  }
+  .float span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 16px;
+    padding: 0.6rem 0.9rem;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--pine);
+    box-shadow: var(--shadow-lg);
+    animation: bob 6s ease-in-out infinite;
+  }
+  .float :global(svg) {
+    color: var(--teal);
+  }
+  .f1 {
+    left: -1.5rem;
+    top: 0.5rem;
+  }
+  .f1 span {
+    background: #fff;
+    animation-delay: 0.9s;
+  }
+  .f2 {
+    right: -10rem;
+    bottom: 11rem;
+    display: none;
+  }
+  .f2 span {
+    background: var(--mint);
+    border: 1px solid rgba(8, 111, 101, 0.15);
+    animation-delay: 1.1s;
+  }
+  .f3 {
+    left: -1rem;
+    bottom: 5rem;
+  }
+  .f3 span {
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-line);
+    color: var(--amber-ink);
+    animation-delay: 1.3s;
+  }
+  .f3 :global(svg) {
+    color: var(--amber-ink);
+  }
+  @media (min-width: 640px) {
+    .f1 {
+      left: -10rem;
+      top: 6rem;
+    }
+    .f2 {
+      display: block;
+    }
+    .f3 {
+      left: -8rem;
+      bottom: 7rem;
+    }
+  }
+
+  /* ---------- Pernyataan + kartu bertumpuk ---------- */
+  .pernyataan {
+    max-width: 22ch;
+    margin: 0 0 4rem;
+    font-size: clamp(2rem, 5.2vw, 4.4rem);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    color: var(--pine);
+    text-wrap: balance;
+  }
+  .tumpuk {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .tumpuk {
+      gap: 2.5rem;
+    }
+    .tumpuk-item {
+      position: sticky;
+      top: calc(120px + var(--i) * 28px);
+    }
+  }
+  .tumpuk-kartu {
+    position: relative;
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+    min-height: 300px;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    border-radius: var(--radius-panel);
+    border: 1px solid var(--card-line);
+    background: #fff;
+    box-shadow: var(--shadow);
+    color: var(--pine);
+    text-decoration: none;
+    transform-origin: 50% 0;
+  }
+  .tumpuk-item:nth-child(2) .tumpuk-kartu {
+    background: var(--mint);
+  }
+  .tumpuk-item:nth-child(3) .tumpuk-kartu {
+    background: var(--amber-soft);
+    border-color: var(--amber-line);
+  }
+  .tumpuk-kartu:hover {
+    color: var(--pine);
+  }
+  .tumpuk-kartu h3 {
+    margin: 0.75rem 0 0;
+    font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+    max-width: 18ch;
+  }
+  .tumpuk-kartu p {
+    max-width: 52ch;
+    color: var(--ink-soft);
+    margin: 0.25rem 0 1rem;
+  }
+  .tumpuk-no {
+    position: absolute;
+    right: clamp(1.5rem, 4vw, 3rem);
+    top: clamp(1.25rem, 3vw, 2.5rem);
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: rgba(11, 59, 55, 0.08);
+  }
+  .tumpuk-ikon {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: #fff;
+    color: var(--teal);
+    box-shadow: var(--shadow);
+  }
+  .tumpuk-kartu .link-arrow {
+    color: var(--teal);
+    width: fit-content;
+  }
+
+  /* ---------- Fitur menyamping ---------- */
+  .fitur-sec {
+    padding-block: 5rem;
+    overflow: hidden;
+  }
+  @media (min-width: 1024px) {
+    .fitur-sec {
+      padding-block: 6rem;
+    }
+  }
+  .fitur-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .fitur-head h2 {
+    max-width: 16ch;
+    margin: 0;
+  }
+  .fitur-viewport {
+    padding-inline: max(1.25rem, calc((100vw - var(--wrap)) / 2 + 2rem));
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .fitur-viewport::-webkit-scrollbar {
+    display: none;
+  }
+  :global(.samping-aktif) .fitur-viewport {
+    overflow: visible;
+  }
+  .fitur-jalur {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0.5rem;
+    display: flex;
+    gap: 1.25rem;
+    width: max-content;
+  }
+  .fitur-kartu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: min(78vw, 340px);
+    min-height: 340px;
+    padding: 1.75rem;
+    border-radius: var(--radius-panel);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #fff;
+    text-decoration: none;
+    transition:
+      background-color 0.4s,
+      transform 0.5s var(--ease),
+      border-color 0.4s;
+  }
+  .fitur-kartu:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-6px);
+    color: #fff;
+  }
+  .fitur-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+  .fitur-ikon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    background: var(--amber-soft);
+    color: var(--pine);
+  }
+  .fitur-no {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: rgba(227, 241, 236, 0.6);
+  }
+  .fitur-kartu strong {
+    font-size: 1.6rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .fitur-q {
+    color: rgba(227, 241, 236, 0.85);
+  }
+  .fitur-bawah {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+  .fitur-panah {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--pine);
+    font-weight: 700;
+    transition: transform 0.4s var(--ease);
+  }
+  .fitur-kartu:hover .fitur-panah {
+    transform: rotate(-45deg);
+  }
+
+  /* ---------- Unduh ---------- */
   .unduh-grid {
     display: grid;
     gap: 2.5rem;
@@ -219,17 +593,18 @@ import { manfaatUtama } from '../data/halaman';
   .rilis dd {
     margin: 0;
     font-weight: 700;
-    color: var(--teal-900);
+    color: var(--pine);
   }
   .qr-card {
     display: grid;
     gap: 1rem;
     justify-items: start;
+    border-radius: var(--radius-panel);
   }
   .qr-head {
-    font-weight: 750;
+    font-weight: 700;
     font-size: 1.15rem;
-    color: var(--teal-900);
+    color: var(--pine);
     margin: 0;
   }
   .qr-foot {
@@ -237,7 +612,6 @@ import { manfaatUtama } from '../data/halaman';
     color: var(--muted);
     margin: 0;
   }
-  /* QR hanya untuk layar lebar (desktop/laptop). */
   @media (max-width: 899px) {
     .qr-card {
       display: none;
@@ -247,75 +621,45 @@ import { manfaatUtama } from '../data/halaman';
   html[data-perangkat='ios'] .qr-card {
     display: none;
   }
-  .manfaat {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .manfaat-card {
-    display: grid;
-    align-content: start;
-    gap: 0.25rem;
-    height: 100%;
-    text-decoration: none;
-    color: var(--ink);
-    transition:
-      transform 0.15s,
-      border-color 0.15s;
-  }
-  .manfaat-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--teal-600);
-    color: var(--ink);
-  }
-  .manfaat-card p {
-    color: var(--muted);
-  }
-  .manfaat-ikon {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-    display: grid;
-    place-items: center;
-    background: var(--mint-100);
-    color: var(--teal-700);
-    margin-bottom: 1rem;
-  }
-  .manfaat-card .link-arrow {
-    color: var(--teal-700);
-    margin-top: auto;
-  }
+
+  /* ---------- Dua jalur ---------- */
   .jalur-card {
-    border-radius: 24px;
-    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: var(--radius-panel);
+    padding: clamp(1.75rem, 4vw, 3rem);
     display: grid;
     gap: 0.5rem;
     align-content: start;
   }
   .jalur-card h3 {
-    font-size: 1.6rem;
+    font-size: clamp(1.6rem, 2.6vw, 2.2rem);
     margin-top: 0.75rem;
   }
   .jalur-card.pasien {
-    background: linear-gradient(140deg, var(--teal-700), var(--teal-900));
-    color: #e6f3ed;
+    background:
+      radial-gradient(500px 300px at 100% 0%, rgba(47, 148, 136, 0.45), transparent 70%),
+      var(--pine);
+    color: rgba(227, 241, 236, 0.9);
   }
   .jalur-card.pasien h3 {
     color: #fff;
   }
-  .jalur-card.petugas {
+  .jalur-card.pasien :global(svg) {
+    color: var(--amber-soft);
+  }
+  .jalur-card.faskes {
     background: #fff;
     border: 1px solid var(--card-line);
+    box-shadow: var(--shadow);
     color: var(--ink);
   }
-  .jalur-card.petugas :global(svg) {
-    color: var(--teal-700);
+  .jalur-card.faskes :global(svg) {
+    color: var(--teal);
   }
   .jalur-cta {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 0.75rem;
+    margin-top: 1rem;
   }
   .faq-more {
     text-align: center;

@@ -95,15 +95,14 @@ export const halamanFitur: Halaman[] = [
       keterangan: 'Antrean poli di ruang petugas (mode prototipe, data contoh).',
     },
     perluDiketahui: [
-      'Akses hanya untuk akun petugas dan manajemen, masuk lewat halaman Masuk Petugas.',
-      'Akun internal dibuat oleh pengelola; tidak ada pendaftaran mandiri.',
+      'Setiap peran (petugas poli, dokter, laboratorium, farmasi, manajemen) hanya melihat layar sesuai tugasnya.',
       'Pemindai QR memakai kamera browser dan hanya berjalan lewat HTTPS. Bila kamera tidak tersedia, nomor check-in dapat diketik.',
       'Riwayat aktivitas menampilkan pembaruan terakhir tiap tahap, belum audit log lengkap.',
     ],
     lanjut: {
-      label: 'Cara memperoleh akses petugas',
-      href: '/akses-petugas',
-      teks: 'Akun petugas tidak bisa dibuat sendiri. Lihat langkahnya.',
+      label: 'Lihat sisi pasien: Antrean Langsung',
+      href: '/fitur/antrean-langsung',
+      teks: 'Apa yang dilihat pasien saat petugas memanggil nomor.',
     },
     terkait: ['pendaftaran', 'alur-pelayanan', 'poliklinik'],
   },
@@ -365,9 +364,9 @@ export const halamanUntuk: Halaman[] = [
       'Layar pasien ikut berubah setelah check-in (paling lama sekitar 15 detik).',
     ],
     lanjut: {
-      label: 'Cara memperoleh akses petugas',
-      href: '/akses-petugas',
-      teks: 'Akun dibuat oleh pengelola HyTrack di fasilitasmu.',
+      label: 'Fitur: Dashboard Petugas',
+      href: '/fitur/dashboard-petugas',
+      teks: 'Antrean poli, check-in QR, dan panggilan pasien dalam satu layar.',
     },
     terkait: ['dashboard-petugas', 'antrean-langsung', 'poliklinik'],
   },
@@ -446,9 +445,9 @@ export const halamanUntuk: Halaman[] = [
       'Rekam medis elektronik rumah sakit tidak terhubung; catatan tersimpan di HyTrack.',
     ],
     lanjut: {
-      label: 'Cara memperoleh akses petugas',
-      href: '/akses-petugas',
-      teks: 'Akun dokter dibuat oleh pengelola.',
+      label: 'Lihat sisi pasien: Alur Pelayanan',
+      href: '/fitur/alur-pelayanan',
+      teks: 'Tahap yang dilihat pasien setelah dokter selesai memeriksa.',
     },
     terkait: ['alur-pelayanan', 'laboratorium', 'farmasi'],
   },
@@ -530,38 +529,6 @@ export const halamanUntuk: Halaman[] = [
       teks: 'Di mana tahap laboratorium berada dalam kunjungan pasien.',
     },
     terkait: ['alur-pelayanan', 'poliklinik', 'farmasi'],
-  },
-  {
-    slug: 'kasir',
-    kelompok: 'untuk',
-    label: 'Pembayaran & Kasir',
-    pertanyaan: 'Apakah pembayaran dan kasir sudah bisa dilacak di HyTrack?',
-    ringkas:
-      'Belum. HyTrack saat ini belum memiliki modul pembayaran, tagihan, atau kasir. Pembayaran tetap mengikuti prosedur rumah sakit.',
-    status: 'pengembangan',
-    statusCatatan: 'Modul pembayaran dan kasir belum dibangun di aplikasi HyTrack.',
-    alur: {
-      judul: 'Yang terjadi sekarang',
-      langkah: [
-        'Pasien menyelesaikan pemeriksaan dan farmasi seperti biasa di HyTrack.',
-        'Pembayaran dilakukan di kasir rumah sakit di luar HyTrack.',
-        'HyTrack tidak menampilkan tagihan, metode pembayaran, atau status lunas.',
-      ],
-    },
-    visual: {
-      jenis: 'kosong',
-      keterangan: 'Belum ada tampilan pembayaran di aplikasi. Bagian ini akan diisi setelah modulnya dibuat.',
-    },
-    perluDiketahui: [
-      'HyTrack tidak meminta dan tidak menyimpan data kartu atau rekening.',
-      'Integrasi BPJS dan SIMRS juga belum ada.',
-    ],
-    lanjut: {
-      label: 'Diskusikan kebutuhan fasilitasmu',
-      href: '/kerja-sama',
-      teks: 'Ceritakan alur kasir di tempatmu untuk pengembangan berikutnya.',
-    },
-    terkait: ['alur-pelayanan', 'pelacakan-obat', 'pasien'],
   },
 ];
 

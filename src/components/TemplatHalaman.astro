@@ -16,50 +16,80 @@ const terkait = h.terkait.map(cariHalaman).filter((x): x is Halaman => Boolean(x
 <Base judul={h.label} deskripsi={`${h.pertanyaan} ${h.ringkas}`}>
   <section class="page-hero">
     <div class="wrap">
-      <p class="crumbs"><a href="/">Beranda</a> / <a href={induk.href}>{induk.label}</a> / {h.label}</p>
-      <span class="eyebrow">{h.label}</span>
+      <p class="crumbs" data-reveal><a href="/">Beranda</a> / <a href={induk.href}>{induk.label}</a> / {h.label}</p>
+      <span class="eyebrow" data-reveal>{h.label}</span>
       <h1>{h.pertanyaan}</h1>
-      <p class="lead">{h.ringkas}</p>
-      <div class="status-row">
+      <p class="lead" data-reveal>{h.ringkas}</p>
+      <div class="status-row" data-reveal>
         <Status status={h.status} />
         {h.statusCatatan && <span class="status-note">{h.statusCatatan}</span>}
       </div>
     </div>
   </section>
 
-  <section class="section-tight">
+  <!-- Scrollytelling: langkah menyala satu per satu, visual menempel di samping -->
+  <section class="section-tight cerita" data-cerita>
     <div class="wrap th-grid">
-      <div>
+      <div class="th-langkah">
+        <p class="eyebrow">Contoh</p>
         <h2 class="h-sub">{h.alur.judul}</h2>
-        <ol class="steps">
-          {h.alur.langkah.map((l) => <li>{l}</li>)}
-        </ol>
-
-        <h2 class="h-sub mt">Yang perlu diketahui</h2>
-        <ul class="facts">
-          {
-            h.perluDiketahui.map((f) => (
-              <li>
-                <Ikon nama="info" ukuran={20} />
-                <span>{f}</span>
-              </li>
-            ))
-          }
-        </ul>
+        <p class="nomor-langkah" data-nomor-langkah aria-hidden="true"></p>
+        <div class="langkah-wadah">
+          <span class="garis-dasar" aria-hidden="true"></span>
+          <span class="garis-isi" data-garis aria-hidden="true"></span>
+          <ol class="langkah-daftar">
+            {
+              h.alur.langkah.map((l, i) => (
+                <li data-langkah>
+                  <span class="langkah-no" aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  <p>{l}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
       </div>
       <div class="th-visual">
-        <Visual visual={h.visual} />
+        <div class="th-visual-isi" data-cerita-visual>
+          <Visual visual={h.visual} />
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section-tight bg-cream">
+  <!-- Perlu diketahui: kartu berjalan menyamping di layar lebar -->
+  <section class="tahu bg-dark" aria-labelledby="tahu-judul" data-samping>
+    <div class="wrap tahu-head">
+      <h2 id="tahu-judul" class="judul-besar">Yang perlu diketahui</h2>
+    </div>
+    <div class="tahu-viewport">
+      <ul class="tahu-jalur" data-samping-jalur>
+        {
+          h.perluDiketahui.map((f, i) => (
+            <li class="tahu-kartu">
+              <span class="tahu-no" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <Ikon nama="info" ukuran={24} />
+              <p>{f}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight">
     <div class="wrap">
-      <a class="next card" href={h.lanjut.href}>
+      <a class="next" href={h.lanjut.href} data-reveal>
         <span class="eyebrow">Langkah berikutnya</span>
         <span class="next-title">
           {h.lanjut.label}
-          {h.lanjut.eksternal ? <Ikon nama="luar" ukuran={22} /> : <Ikon nama="kanan" ukuran={22} />}
+          <span class="next-panah" aria-hidden="true">
+            {h.lanjut.eksternal ? <Ikon nama="luar" ukuran={22} /> : <Ikon nama="kanan" ukuran={22} />}
+          </span>
         </span>
         <span class="next-text">{h.lanjut.teks}</span>
       </a>
@@ -68,10 +98,11 @@ const terkait = h.terkait.map(cariHalaman).filter((x): x is Halaman => Boolean(x
       <ul class="related">
         {
           terkait.map((t) => (
-            <li>
+            <li data-reveal>
               <a href={urlHalaman(t)}>
                 <strong>{t.label}</strong>
                 <span>{t.pertanyaan}</span>
+                <span class="link-arrow">Baca</span>
               </a>
             </li>
           ))
@@ -87,10 +118,10 @@ const terkait = h.terkait.map(cariHalaman).filter((x): x is Halaman => Boolean(x
     flex-wrap: wrap;
     align-items: center;
     gap: 0.6rem 1rem;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
   }
   .status-note {
-    font-size: 0.93rem;
+    font-size: 15px;
     color: var(--muted);
     max-width: 70ch;
   }
@@ -100,49 +131,196 @@ const terkait = h.terkait.map(cariHalaman).filter((x): x is Halaman => Boolean(x
   }
   @media (min-width: 960px) {
     .th-grid {
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.1fr 0.9fr;
       align-items: start;
+      gap: 4rem;
     }
     .th-visual {
       position: sticky;
-      top: 100px;
+      top: 120px;
     }
   }
   .h-sub {
-    font-size: 1.35rem;
-    margin-bottom: 1.25rem;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    margin-bottom: 1rem;
   }
   .mt {
-    margin-top: 2.75rem;
+    margin-top: 4rem;
   }
-  .facts {
+  .nomor-langkah {
+    min-height: 1.5em;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .langkah-wadah {
+    position: relative;
+  }
+  .garis-dasar,
+  .garis-isi {
+    position: absolute;
+    left: 21px;
+    top: 22px;
+    bottom: 22px;
+    width: 2px;
+    border-radius: 2px;
+  }
+  .garis-dasar {
+    background: rgba(11, 59, 55, 0.1);
+  }
+  .garis-isi {
+    background: var(--teal);
+    transform-origin: 50% 0;
+    transform: scaleY(0);
+  }
+  .langkah-daftar {
     list-style: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
     display: grid;
-    gap: 0.8rem;
+    gap: 1rem;
   }
-  .facts li {
+  .langkah-daftar li {
+    position: relative;
     display: flex;
-    gap: 0.7rem;
+    gap: 1.25rem;
     align-items: flex-start;
+    padding: 1rem 1rem 1rem 0;
+    transition:
+      opacity 0.5s var(--ease),
+      transform 0.5s var(--ease);
   }
-  .facts :global(svg) {
-    color: var(--teal-700);
+  .langkah-daftar p {
+    margin: 0.45rem 0 0;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.55;
+  }
+  .langkah-no {
+    position: relative;
+    z-index: 1;
     flex: none;
-    margin-top: 2px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: var(--teal);
+    border: 2px solid var(--teal);
+    font-weight: 700;
+    color: #fff;
+    transition:
+      background-color 0.4s,
+      color 0.4s,
+      border-color 0.4s,
+      transform 0.5s var(--ease);
   }
+  /* Saat skrip gerak aktif: langkah yang belum aktif meredup, yang aktif menyala. */
+  .cerita-aktif .langkah-no {
+    background: #fff;
+    border-color: rgba(11, 59, 55, 0.12);
+    color: var(--pine);
+  }
+  .cerita-aktif .langkah-daftar li.aktif .langkah-no {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+    transform: scale(1.08);
+  }
+  @media (min-width: 960px) {
+    .cerita-aktif .langkah-daftar li {
+      opacity: 0.32;
+      min-height: 22vh;
+    }
+    .cerita-aktif .langkah-daftar li.aktif {
+      opacity: 1;
+      transform: translateX(8px);
+    }
+  }
+  .th-visual-isi {
+    transform-origin: 50% 50%;
+  }
+
+  /* ---------- Perlu diketahui (menyamping) ---------- */
+  .tahu {
+    overflow: hidden;
+    padding-block: 5rem;
+  }
+  .tahu-head {
+    margin-bottom: 2.5rem;
+  }
+  .tahu-head h2 {
+    margin: 0;
+  }
+  .tahu-viewport {
+    padding-inline: max(1.25rem, calc((100vw - var(--wrap)) / 2 + 2rem));
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tahu-viewport::-webkit-scrollbar {
+    display: none;
+  }
+  :global(.samping-aktif) .tahu-viewport {
+    overflow: visible;
+  }
+  .tahu-jalur {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.25rem;
+    width: max-content;
+  }
+  .tahu-kartu {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    width: min(80vw, 380px);
+    min-height: 240px;
+    padding: 1.75rem;
+    border-radius: var(--radius-panel);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .tahu-kartu :global(svg) {
+    color: var(--amber-soft);
+  }
+  .tahu-kartu p {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.55;
+    color: rgba(227, 241, 236, 0.92);
+  }
+  .tahu-no {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.25rem;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: rgba(255, 255, 255, 0.07);
+  }
+
+  /* ---------- Langkah berikutnya & terkait ---------- */
   .next {
     display: grid;
-    gap: 0.3rem;
-    text-decoration: none;
+    gap: 0.4rem;
+    max-width: 760px;
+    padding: clamp(1.75rem, 4vw, 2.75rem);
+    border-radius: var(--radius-panel);
+    background: var(--mint);
     color: var(--ink);
-    border: 2px solid var(--teal-700);
-    max-width: 640px;
-    transition: transform 0.15s;
+    text-decoration: none;
+    transition:
+      transform 0.5s var(--ease),
+      box-shadow 0.5s var(--ease);
   }
   .next:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
     color: var(--ink);
   }
   .next .eyebrow {
@@ -151,10 +329,27 @@ const terkait = h.terkait.map(cariHalaman).filter((x): x is Halaman => Boolean(x
   .next-title {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 1.35rem;
-    font-weight: 720;
-    color: var(--teal-800);
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--pine);
+  }
+  .next-panah {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    background: var(--pine);
+    color: #fff;
+    transition: transform 0.5s var(--ease);
+  }
+  .next:hover .next-panah {
+    transform: rotate(-45deg);
   }
   .next-text {
     color: var(--muted);
@@ -173,23 +368,35 @@ const terkait = h.terkait.map(cariHalaman).filter((x): x is Halaman => Boolean(x
   }
   .related a {
     display: grid;
-    gap: 0.3rem;
+    align-content: start;
+    gap: 0.4rem;
     height: 100%;
-    padding: 1.1rem 1.2rem;
+    padding: 1.5rem;
     background: #fff;
     border: 1px solid var(--card-line);
-    border-radius: 16px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     text-decoration: none;
     color: var(--ink);
+    transition:
+      transform 0.5s var(--ease),
+      border-color 0.3s;
   }
   .related a:hover {
-    border-color: var(--teal-600);
+    transform: translateY(-4px);
+    border-color: var(--teal);
   }
   .related strong {
-    color: var(--teal-800);
+    font-size: 1.15rem;
+    color: var(--pine);
   }
   .related span {
-    font-size: 0.93rem;
+    font-size: 15px;
     color: var(--muted);
+  }
+  .related .link-arrow {
+    margin-top: 0.5rem;
+    color: var(--teal);
+    width: fit-content;
   }
 </style>
